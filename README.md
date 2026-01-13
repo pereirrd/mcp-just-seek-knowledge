@@ -1,0 +1,1 @@
+# mcp-just-seek-knowledge
