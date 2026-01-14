@@ -101,86 +101,47 @@ Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre proj
 
 ### 2.1 Definir Schema do Banco
 **Atividades:**
-- [ ] Criar módulo `src/database/schema.py`
-- [ ] Definir estrutura da tabela de conhecimento (com versionamento):
-  - [ ] `id` - Identificador único (SERIAL PRIMARY KEY)
-  - [ ] `service_name` - Nome do serviço analisado (VARCHAR/TEXT, NOT NULL)
-  - [ ] `version` - Versão do registro (INTEGER, NOT NULL, DEFAULT 1)
-  - [ ] `content` - Conteúdo do conhecimento (TEXT NOT NULL)
-  - [ ] `embedding` - Vetor de embedding (vector(1536) NOT NULL)
-  - [ ] `metadata` - Metadados adicionais (JSONB)
-  - [ ] `is_current` - Marca versão atual (BOOLEAN, NOT NULL, DEFAULT true)
-  - [ ] `created_at` - Data de criação (TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
-  - [ ] `updated_at` - Data de atualização (TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
-- [ ] Definir constraint UNIQUE para `(service_name, version)`
-- [ ] Definir índices:
-  - [ ] Índice IVFFlat para busca vetorial (apenas em `is_current = true`)
-  - [ ] Índice composto para `(service_name, version)`
-  - [ ] Índice para `service_name` e `is_current` (para buscar versão atual)
-- [ ] Criar função SQL para limpar versões antigas (manter apenas últimas 5 por service_name)
-- [ ] Criar trigger para atualizar `updated_at` automaticamente
-- [ ] Criar função/procedimento para gerenciar versionamento ao inserir/atualizar
+- [x] Criar módulo `src/database/schema.py`
+- [x] Definir estrutura da tabela de conhecimento:
+  - [x] `id` - Identificador único (SERIAL PRIMARY KEY)
+  - [x] `service_name` - Nome do serviço analisado (VARCHAR/TEXT, NOT NULL, UNIQUE)
+  - [x] `content` - Conteúdo do conhecimento (TEXT NOT NULL)
+  - [x] `embedding` - Vetor de embedding (vector(1536) NOT NULL)
+  - [x] `metadata` - Metadados adicionais (JSONB)
+  - [x] `created_at` - Data de criação (TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
+  - [x] `updated_at` - Data de atualização (TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
+- [x] Definir constraint UNIQUE para `service_name`
+- [x] Definir índices:
+  - [x] Índice IVFFlat para busca vetorial
+  - [x] Índice para `service_name` (para buscas por serviço)
+- [x] Criar trigger para atualizar `updated_at` automaticamente
 
 **Decisões:**
-- `service_name` é obrigatório e necessário para identificar serviços e permitir updates
-- **Versionamento**: Sistema mantém histórico das últimas 5 versões por `service_name`
-- `version` incrementa a cada atualização do mesmo `service_name`
-- `is_current` marca a versão mais recente para busca semântica
+- `service_name` é obrigatório, único e necessário para identificar serviços e permitir updates
 - Metadata JSONB permite flexibilidade para armazenar informações adicionais
-- Limpeza automática: Ao inserir nova versão, remover versões antigas além das 5 mais recentes
+- Um registro por `service_name` - atualizações sobrescrevem o registro existente
 
 **Modelagem do Schema:**
 ```sql
 CREATE TABLE java_api_knowledge (
     id SERIAL PRIMARY KEY,
-    service_name VARCHAR(255) NOT NULL,
-    version INTEGER NOT NULL DEFAULT 1,
+    service_name VARCHAR(255) NOT NULL UNIQUE,
     content TEXT NOT NULL,
     embedding vector(1536) NOT NULL,
     metadata JSONB,
-    is_current BOOLEAN NOT NULL DEFAULT true,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(service_name, version)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Índice para busca vetorial (apenas versões atuais)
-CREATE INDEX idx_knowledge_embedding_current 
+-- Índice para busca vetorial
+CREATE INDEX idx_knowledge_embedding 
 ON java_api_knowledge 
 USING ivfflat (embedding vector_cosine_ops)
-WITH (lists = 100)
-WHERE is_current = true;
+WITH (lists = 100);
 
--- Índice composto para service_name e version
-CREATE INDEX idx_knowledge_service_version 
-ON java_api_knowledge (service_name, version);
-
--- Índice para buscar versão atual por service_name
-CREATE INDEX idx_knowledge_service_current 
-ON java_api_knowledge (service_name, is_current) 
-WHERE is_current = true;
-
--- Função para manter apenas últimas 5 versões
-CREATE OR REPLACE FUNCTION keep_latest_versions(p_service_name VARCHAR)
-RETURNS void AS $$
-DECLARE
-    max_version INTEGER;
-    min_version_to_keep INTEGER;
-BEGIN
-    -- Obter versão máxima
-    SELECT MAX(version) INTO max_version 
-    FROM java_api_knowledge 
-    WHERE service_name = p_service_name;
-    
-    -- Calcular versão mínima a manter (últimas 5)
-    min_version_to_keep := GREATEST(1, max_version - 4);
-    
-    -- Remover versões antigas
-    DELETE FROM java_api_knowledge 
-    WHERE service_name = p_service_name 
-    AND version < min_version_to_keep;
-END;
-$$ LANGUAGE plpgsql;
+-- Índice para service_name
+CREATE INDEX idx_knowledge_service_name 
+ON java_api_knowledge (service_name);
 
 -- Trigger para atualizar updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -198,23 +159,21 @@ EXECUTE FUNCTION update_updated_at_column();
 ```
 
 **Entregáveis:**
-- Script SQL para criação da tabela com versionamento
+- Script SQL para criação da tabela
 - Script SQL para criação de índices otimizados
-- Função para limpeza automática de versões antigas
 - Trigger para atualizar `updated_at`
-- Procedimento para gerenciar versionamento
 
 ---
 
 ### 2.2 Implementar Gerenciamento de Conexão
 **Atividades:**
-- [ ] Criar módulo `src/database/connection.py`
-- [ ] Implementar classe/módulo para gerenciar conexões
-- [ ] Implementar função de conexão com PostgreSQL
-- [ ] Implementar função para criar schema (tabela e índices)
-- [ ] Implementar função para verificar se schema existe
-- [ ] Adicionar tratamento de erros de conexão
-- [ ] Adicionar logs para debug
+- [x] Criar módulo `src/database/connection.py`
+- [x] Implementar classe/módulo para gerenciar conexões
+- [x] Implementar função de conexão com PostgreSQL
+- [x] Implementar função para criar schema (tabela e índices)
+- [x] Implementar função para verificar se schema existe
+- [x] Adicionar tratamento de erros de conexão
+- [x] Adicionar logs para debug
 
 **Entregáveis:**
 - Módulo `connection.py` funcional
@@ -224,32 +183,23 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 2.3 Implementar Repositório de Dados (com LangChain)
 **Atividades:**
-- [ ] Criar módulo `src/database/repository.py`
-- [ ] Implementar classe usando `PGVector` do LangChain
-- [ ] Configurar conexão com PostgreSQL
-- [ ] Configurar filtro padrão para `is_current = true` nas buscas semânticas
-- [ ] Implementar métodos básicos:
-  - [ ] Inserir documento (com embedding, version 1)
-  - [ ] Buscar por similaridade (apenas `is_current = true`)
-  - [ ] Buscar por service_name (versão atual)
-  - [ ] Buscar histórico por service_name (todas as versões)
-  - [ ] Criar nova versão (update com versionamento)
-  - [ ] Chamar função de limpeza de versões antigas
-- [ ] Integrar com serviço de embeddings
-- [ ] Implementar métodos específicos para versionamento:
-  - [ ] Obter versão atual por service_name
-  - [ ] Obter próxima versão para service_name
-  - [ ] Marcar versão anterior como não atual
+- [x] Criar módulo `src/database/repository.py`
+- [x] Implementar classe usando `PGVector` do LangChain
+- [x] Configurar conexão com PostgreSQL
+- [x] Implementar métodos básicos:
+  - [x] Inserir documento (com embedding)
+  - [x] Buscar por similaridade
+  - [x] Buscar por service_name
+  - [x] Atualizar documento por service_name
+- [x] Integrar com serviço de embeddings
 
 **Decisões:**
 - Usar `PGVector` do LangChain para abstrair operações
-- Busca semântica sempre filtra por `is_current = true`
-- Manter compatibilidade com estrutura de metadados incluindo versionamento
+- Manter compatibilidade com estrutura de metadados
 
 **Entregáveis:**
-- Módulo `repository.py` com operações CRUD e versionamento
+- Módulo `repository.py` com operações CRUD
 - Integração com LangChain PGVector
-- Métodos para gerenciar versões
 
 ---
 
@@ -296,35 +246,27 @@ EXECUTE FUNCTION update_updated_at_column();
 ### 4.2 Implementar Serviço de Update
 **Atividades:**
 - [ ] Criar módulo `src/services/update_service.py`
-- [ ] Implementar função/classe para atualizar conhecimento (com versionamento):
+- [ ] Implementar função/classe para atualizar conhecimento:
   - [ ] Receber service_name (obrigatório)
   - [ ] Receber novo conteúdo
   - [ ] Receber metadados atualizados (opcional)
-  - [ ] Buscar versão atual por service_name
-  - [ ] Se service_name não existe: Criar novo registro (version 1) - comportamento de upsert
-  - [ ] Se service_name existe:
-    - [ ] Marcar versão atual como `is_current = false`
-    - [ ] Calcular nova versão (versão máxima + 1)
-    - [ ] Criar novo embedding do conteúdo atualizado
-    - [ ] Inserir novo registro com `is_current = true` e nova versão
-    - [ ] Chamar função SQL para limpar versões antigas (manter apenas últimas 5)
-  - [ ] Retornar informação da versão criada
-- [ ] Implementar transação para garantir consistência (marcar antiga como não atual + inserir nova)
+  - [ ] Se service_name não existe: Criar novo registro - comportamento de upsert
+  - [ ] Se service_name existe: Atualizar registro existente (conteúdo, embedding, metadados, updated_at)
+  - [ ] Criar novo embedding do conteúdo atualizado
+  - [ ] Atualizar registro no banco de dados
 - [ ] Validar dados de entrada
 - [ ] Tratar erros de atualização
-- [ ] Retornar resultado da operação (incluindo versão criada)
+- [ ] Retornar resultado da operação
 - [ ] Adicionar logs
 
 **Decisões Tomadas:**
-- ✅ **Estratégia de Update**: Versionamento (manter histórico das últimas 5 versões)
-- ✅ **Comportamento quando service_name não existe**: Criar novo registro (upsert - version 1)
-- ✅ **Limpeza de versões**: Manter apenas as últimas 5 versões por service_name
-- ✅ **Busca semântica**: Usar apenas registros com `is_current = true` para busca
+- ✅ **Estratégia de Update**: Atualização direta do registro (sem versionamento)
+- ✅ **Comportamento quando service_name não existe**: Criar novo registro (upsert)
+- ✅ **Campo updated_at**: Atualizado automaticamente via trigger do banco de dados
 
 **Entregáveis:**
-- Serviço de update funcional com versionamento
+- Serviço de update funcional
 - Lógica de upsert implementada
-- Limpeza automática de versões antigas
 
 ---
 
@@ -335,24 +277,22 @@ EXECUTE FUNCTION update_updated_at_column();
   - [ ] Receber query (texto de busca)
   - [ ] Receber parâmetros opcionais (k, threshold, etc.)
   - [ ] Criar embedding da query
-  - [ ] Buscar documentos similares no banco (apenas `is_current = true`)
+  - [ ] Buscar documentos similares no banco
   - [ ] Filtrar por threshold de similaridade (opcional)
   - [ ] Retornar resultados ordenados por relevância
 - [ ] Implementar filtros opcionais:
-  - [ ] Filtrar por service_name (versão atual)
+  - [ ] Filtrar por service_name
   - [ ] Filtrar por metadados
-- [ ] Formatar resultados de retorno (incluir service_name, version quando relevante)
+- [ ] Formatar resultados de retorno (incluir service_name)
 - [ ] Tratar erros de busca
 - [ ] Adicionar logs
 
 **Decisões:**
-- Busca semântica sempre utiliza apenas versões atuais (`is_current = true`)
-- Busca por service_name retorna apenas a versão atual
+- Busca semântica utiliza todos os registros da tabela
 
 **Entregáveis:**
 - Serviço de search funcional
 - Busca semântica com filtros opcionais
-- Integração com sistema de versionamento
 
 ---
 
@@ -593,14 +533,13 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ## 🔑 Decisões Tomadas
 
-1. **Estratégia de Update**: ✅ **Versionamento (manter histórico)**
-   - Sistema mantém histórico das últimas 5 versões por `service_name`
-   - Cada atualização cria nova versão (versão anterior marcada como `is_current = false`)
-   - Versões antigas além das 5 mais recentes são removidas automaticamente
-   - Busca semântica utiliza apenas versões atuais (`is_current = true`)
+1. **Estratégia de Update**: ✅ **Atualização direta (sem versionamento)**
+   - Sistema não mantém histórico - cada `service_name` tem apenas um registro
+   - Atualizações sobrescrevem o registro existente
+   - Campo `updated_at` é atualizado automaticamente via trigger
 
 2. **Comportamento quando service_name não existe no update**: ✅ **Criar novo registro (upsert)**
-   - Se `service_name` não existe, criar novo registro com `version = 1`
+   - Se `service_name` não existe, criar novo registro
    - Comportamento de upsert permite usar update mesmo para novos serviços
 
 3. **Localização do arquivo mcp.json**: ✅ **No projeto (`.cursor/mcp.json`)**
@@ -624,10 +563,9 @@ EXECUTE FUNCTION update_updated_at_column();
 
 - **LangChain**: Decisão tomada de usar LangChain apesar da recomendação geral de usar direto para MCP. Isso deve ser considerado nas implementações.
 - **Conhecimento Gerado por IA**: O projeto não ingere código Java diretamente, mas conhecimento gerado por IA sobre projetos Java de APIs REST.
-- **Service Name**: É obrigatório para ingest e update. É fundamental para identificar serviços e permitir updates. Deve ser único e identificável.
-- **Versionamento**: Sistema mantém histórico das últimas 5 versões por service_name. Cada atualização cria nova versão, mantendo a anterior marcada como não atual. Versões antigas são limpas automaticamente.
+- **Service Name**: É obrigatório para ingest e update. É fundamental para identificar serviços e permitir updates. Deve ser único e identificável (constraint UNIQUE no banco).
+- **Modelo de Dados Simplificado**: Sistema não mantém histórico - cada service_name tem apenas um registro. Atualizações sobrescrevem o registro existente e atualizam o campo `updated_at`.
 - **Update com Upsert**: Se service_name não existe no update, cria novo registro (comportamento de upsert).
-- **Busca Semântica**: Busca utiliza apenas versões atuais (`is_current = true`) para garantir resultados mais relevantes.
 - **Embeddings**: Usar modelo text-embedding-3-small (1536 dimensões) como padrão.
 - **PostgreSQL**: Usar Docker para facilitar desenvolvimento e deploy.
 
