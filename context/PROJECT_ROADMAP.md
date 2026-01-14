@@ -27,14 +27,14 @@ Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre proj
 
 ### 1.1 Criar Estrutura de Diretórios
 **Atividades:**
-- [ ] Criar diretório raiz do projeto
-- [ ] Criar estrutura de diretórios `src/`
-- [ ] Criar subdiretórios:
-  - [ ] `src/database/` - Gerenciamento de banco de dados
-  - [ ] `src/embeddings/` - Serviços de embeddings
-  - [ ] `src/services/` - Serviços de negócio (ingest, update, search)
-  - [ ] `src/mcp/` - Servidor MCP e handlers
-- [ ] Criar arquivos `__init__.py` nos pacotes Python
+- [x] Criar diretório raiz do projeto
+- [x] Criar estrutura de diretórios `src/`
+- [x] Criar subdiretórios:
+  - [x] `src/database/` - Gerenciamento de banco de dados
+  - [x] `src/embeddings/` - Serviços de embeddings
+  - [x] `src/services/` - Serviços de negócio (ingest, update, search)
+  - [x] `src/mcp/` - Servidor MCP e handlers
+- [x] Criar arquivos `__init__.py` nos pacotes Python
 
 **Entregáveis:**
 - Estrutura de diretórios completa
@@ -44,18 +44,18 @@ Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre proj
 
 ### 1.2 Configurar Dependências
 **Atividades:**
-- [ ] Criar arquivo `requirements.txt`
-- [ ] Adicionar dependências:
-  - [ ] `langchain` - Framework principal
-  - [ ] `langchain-community` - Comunidade LangChain
-  - [ ] `langchain-core` - Core do LangChain
-  - [ ] `langchain-openai` - Integração OpenAI
-  - [ ] `langchain-postgres` - Integração PostgreSQL/pgVector
-  - [ ] `psycopg` - Driver PostgreSQL
-  - [ ] `pgvector` - Extensão pgVector
-  - [ ] `openai` - Cliente OpenAI
-  - [ ] `python-dotenv` - Gerenciamento de variáveis de ambiente
-- [ ] Definir versões específicas das dependências
+- [x] Criar arquivo `requirements.txt`
+- [x] Adicionar dependências:
+  - [x] `langchain` - Framework principal
+  - [x] `langchain-community` - Comunidade LangChain
+  - [x] `langchain-core` - Core do LangChain
+  - [x] `langchain-openai` - Integração OpenAI
+  - [x] `langchain-postgres` - Integração PostgreSQL/pgVector
+  - [x] `psycopg` - Driver PostgreSQL
+  - [x] `pgvector` - Extensão pgVector
+  - [x] `openai` - Cliente OpenAI
+  - [x] `python-dotenv` - Gerenciamento de variáveis de ambiente
+- [x] Definir versões específicas das dependências
 
 **Entregáveis:**
 - Arquivo `requirements.txt` com todas as dependências
@@ -64,17 +64,17 @@ Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre proj
 
 ### 1.3 Configurar Variáveis de Ambiente
 **Atividades:**
-- [ ] Criar arquivo `.env.example`
-- [ ] Definir variáveis necessárias:
-  - [ ] `PGVECTOR_URL` - URL de conexão PostgreSQL
-  - [ ] `POSTGRES_DB` - Nome do banco de dados
-  - [ ] `POSTGRES_USER` - Usuário PostgreSQL
-  - [ ] `POSTGRES_PASSWORD` - Senha PostgreSQL
-  - [ ] `OPENAI_API_KEY` - Chave API OpenAI
-  - [ ] `OPENAI_EMBEDDING_MODEL` - Modelo de embedding (ex: text-embedding-3-small)
-  - [ ] `EMBEDDING_DIMENSION` - Dimensão dos embeddings (ex: 1536)
-- [ ] Documentar cada variável no `.env.example`
-- [ ] Criar arquivo `.gitignore` para excluir `.env`
+- [x] Criar arquivo `.env.example`
+- [x] Definir variáveis necessárias:
+  - [x] `PGVECTOR_URL` - URL de conexão PostgreSQL
+  - [x] `POSTGRES_DB` - Nome do banco de dados
+  - [x] `POSTGRES_USER` - Usuário PostgreSQL
+  - [x] `POSTGRES_PASSWORD` - Senha PostgreSQL
+  - [x] `OPENAI_API_KEY` - Chave API OpenAI
+  - [x] `OPENAI_EMBEDDING_MODEL` - Modelo de embedding (ex: text-embedding-3-small)
+  - [x] `EMBEDDING_DIMENSION` - Dimensão dos embeddings (ex: 1536)
+- [x] Documentar cada variável no `.env.example`
+- [x] Criar arquivo `.gitignore` para excluir `.env`
 
 **Entregáveis:**
 - Arquivo `.env.example` com todas as variáveis
@@ -84,12 +84,12 @@ Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre proj
 
 ### 1.4 Configurar Docker e PostgreSQL
 **Atividades:**
-- [ ] Criar arquivo `docker-compose.yml`
-- [ ] Configurar serviço PostgreSQL com pgVector
-- [ ] Configurar volumes para persistência
-- [ ] Configurar healthcheck
-- [ ] Criar script de inicialização da extensão pgvector
-- [ ] Documentar como iniciar o banco
+- [x] Criar arquivo `docker-compose.yml`
+- [x] Configurar serviço PostgreSQL com pgVector
+- [x] Configurar volumes para persistência
+- [x] Configurar healthcheck
+- [x] Criar script de inicialização da extensão pgvector
+- [x] Documentar como iniciar o banco
 
 **Entregáveis:**
 - Arquivo `docker-compose.yml` funcional
