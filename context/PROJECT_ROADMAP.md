@@ -207,13 +207,13 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 3.1 Implementar Serviço de Embeddings
 **Atividades:**
-- [ ] Criar módulo `src/embeddings/embedding_service.py`
-- [ ] Implementar classe usando `OpenAIEmbeddings` do LangChain
-- [ ] Configurar modelo de embedding (text-embedding-3-small)
-- [ ] Implementar método para criar embedding de texto
-- [ ] Implementar método para criar embeddings em batch (otimização)
-- [ ] Adicionar tratamento de erros
-- [ ] Adicionar logs
+- [x] Criar módulo `src/embeddings/embedding_service.py`
+- [x] Implementar classe usando `OpenAIEmbeddings` do LangChain
+- [x] Configurar modelo de embedding (text-embedding-3-small)
+- [x] Implementar método para criar embedding de texto
+- [x] Implementar método para criar embeddings em batch (otimização)
+- [x] Adicionar tratamento de erros
+- [x] Adicionar logs
 
 **Entregáveis:**
 - Serviço de embeddings funcional
