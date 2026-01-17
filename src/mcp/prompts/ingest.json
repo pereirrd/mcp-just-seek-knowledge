@@ -1,22 +1,25 @@
 {
   "name": "ingest",
-  "description": "Adiciona novo conhecimento sobre uma API Java REST na base de dados. Use esta ferramenta quando precisar armazenar informações sobre estruturas de APIs, padrões de projeto, boas práticas ou documentação técnica de um serviço Java específico. O service_name deve ser único e identificará o serviço. Se o service_name já existir, a operação falhará - use 'update' para atualizar conhecimento existente.",
+  "description": "Adiciona novo conhecimento sobre um projeto de software na base de dados. Use esta ferramenta quando precisar armazenar informações sobre estruturas de projetos, padrões de projeto, boas práticas ou documentação técnica de um projeto específico. O service_name deve ser único e identificará o projeto. Se o service_name já existir, a operação falhará - use 'update' para atualizar conhecimento existente.",
   "inputSchema": {
     "type": "object",
     "properties": {
       "service_name": {
         "type": "string",
-        "description": "Nome único do serviço Java (ex: 'user-service', 'payment-api'). Deve ser único e identificável."
+        "description": "Nome único do projeto de software (ex: 'user-service', 'payment-api', 'frontend-app'). Deve ser único, identificável, de preferencia o nome do projeto ou nome do repositorio. Pode ser encontrado em arquivos de configuração YAML, Json, Properties, Xml, etc."
       },
       "content": {
         "type": "string",
-        "description": "Conteúdo do conhecimento sobre o serviço (ex: estrutura da API, padrões usados, boas práticas, documentação técnica)."
+        "description": "Conteúdo do conhecimento sobre o projeto (ex: estrutura do projeto, padrões usados, boas práticas, documentação técnica, regras de negócio, etc.)."
       },
       "metadata": {
         "type": "object",
-        "description": "Metadados adicionais sobre o conhecimento (ex: versão da API, tecnologias usadas, data de criação)."
+        "description": "Metadados adicionais sobre o conhecimento (ex: versão da API, tecnologias usadas, data de criação, usuário responsável por esse conhecimento)."
       }
     },
-    "required": ["service_name", "content"]
+    "required": [
+      "service_name",
+      "content"
+    ]
   }
 }

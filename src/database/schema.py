@@ -1,7 +1,7 @@
-"""Schema SQL para a tabela de conhecimento Java API."""
+"""Schema SQL para a tabela de conhecimento de projetos de software."""
 
 CREATE_TABLE_SQL = """
-CREATE TABLE IF NOT EXISTS java_api_knowledge (
+CREATE TABLE IF NOT EXISTS software_design_knowledge (
     id SERIAL PRIMARY KEY,
     service_name VARCHAR(255) NOT NULL UNIQUE,
     content TEXT NOT NULL,
@@ -14,14 +14,14 @@ CREATE TABLE IF NOT EXISTS java_api_knowledge (
 
 CREATE_VECTOR_INDEX_SQL = """
 CREATE INDEX IF NOT EXISTS idx_knowledge_embedding 
-ON java_api_knowledge 
+ON software_design_knowledge 
 USING ivfflat (embedding vector_cosine_ops)
 WITH (lists = 100);
 """
 
 CREATE_SERVICE_NAME_INDEX_SQL = """
 CREATE INDEX IF NOT EXISTS idx_knowledge_service_name 
-ON java_api_knowledge (service_name);
+ON software_design_knowledge (service_name);
 """
 
 CREATE_TRIGGER_FUNCTION_SQL = """
@@ -35,8 +35,9 @@ $$ LANGUAGE plpgsql;
 """
 
 CREATE_TRIGGER_SQL = """
-CREATE TRIGGER IF NOT EXISTS update_java_api_knowledge_updated_at
-BEFORE UPDATE ON java_api_knowledge
+DROP TRIGGER IF EXISTS update_software_design_knowledge_updated_at ON software_design_knowledge;
+CREATE TRIGGER update_software_design_knowledge_updated_at
+BEFORE UPDATE ON software_design_knowledge
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
 """

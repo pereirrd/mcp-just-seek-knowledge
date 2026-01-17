@@ -4,7 +4,7 @@ import sys
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 
 from ..services.ingest_service import IngestService
 from ..services.update_service import UpdateService
@@ -272,17 +272,26 @@ class MCPServer:
                     request_id = request.get("id")
                     params = request.get("params", {})
                     
-                    if method == "initialize":
-                        self.handle_initialize(request_id)
-                    elif method == "tools/list":
-                        self.handle_tools_list(request_id)
-                    elif method == "tools/call":
-                        self.handle_tool_call(request_id, params)
+                    # Notificações (sem id) não requerem resposta
+                    if method and request_id is not None:
+                        if method == "initialize":
+                            self.handle_initialize(request_id)
+                        elif method == "tools/list":
+                            self.handle_tools_list(request_id)
+                        elif method == "tools/call":
+                            self.handle_tool_call(request_id, params)
+                        else:
+                            self._error_response(request_id, -32601, f"Método não encontrado: {method}")
+                    elif method:
+                        # Notificação sem id - apenas logar, não enviar resposta
+                        logger.debug(f"Notificação recebida (sem id): {method}")
                     else:
-                        self._error_response(request_id, -32601, f"Método não encontrado: {method}")
+                        # Requisição sem method - enviar erro
+                        self._error_response(request_id, -32600, "Invalid Request: missing method")
                 
                 except json.JSONDecodeError as e:
                     logger.error(f"Erro ao decodificar JSON: {e}")
+                    # Para erros de parse, o id deve ser null conforme JSON-RPC 2.0
                     self._error_response(None, -32700, "Parse error", str(e))
                 except Exception as e:
                     logger.error(f"Erro ao processar requisição: {e}", exc_info=True)

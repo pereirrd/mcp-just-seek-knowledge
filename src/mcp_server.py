@@ -1,26 +1,41 @@
 """Entry point do servidor MCP."""
 
 import sys
+from pathlib import Path
+
+# Adicionar diretório do projeto ao path para permitir imports absolutos quando executado diretamente
+parent_dir = Path(__file__).parent.parent
+if str(parent_dir) not in sys.path:
+    sys.path.insert(0, str(parent_dir))
+
 import logging
 import logging.config
-from pathlib import Path
 from dotenv import load_dotenv
 
-from .database.connection import initialize_database
-from .mcp.mcp_server import MCPServer
+# Usar imports absolutos do pacote src para funcionar quando executado diretamente
+from src.database.connection import initialize_database
+from src.mcp.mcp_server import MCPServer
 
-# Carregar variáveis de ambiente
-load_dotenv()
+# Carregar variáveis de ambiente do arquivo .env no diretório raiz do projeto
+env_file = parent_dir / ".env"
+load_dotenv(env_file)
 
 # Configurar logging a partir de arquivo INI
-# Criar diretório log se não existir
-log_dir = Path(__file__).parent.parent / "log"
-log_dir.mkdir(exist_ok=True)
+# Criar diretório log se não existir (deve ser criado antes do fileConfig)
+log_dir = parent_dir / "log"
+log_dir.mkdir(parents=True, exist_ok=True)
 
-# Carregar configuração de logging do arquivo INI (formato nativo do Python)
-config_file = Path(__file__).parent.parent / "logging.ini"
+# Carregar configuração de logging do arquivo INI
+config_file = parent_dir / "logging.ini"
 if config_file.exists():
-    logging.config.fileConfig(config_file, disable_existing_loggers=False)
+    import os
+    original_cwd = os.getcwd()
+    try:
+        # Mudar temporariamente para o diretório do projeto para resolver caminhos relativos no INI
+        os.chdir(parent_dir)
+        logging.config.fileConfig(config_file, disable_existing_loggers=False)
+    finally:
+        os.chdir(original_cwd)
 else:
     # Fallback se arquivo não existir
     logging.basicConfig(
