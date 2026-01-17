@@ -130,23 +130,42 @@ Tratamento de erros e logging implementados.
 
 ### Serviços de Embeddings
 
-#### Serviço de Embeddings (`src/embeddings/embedding_service.py`)
-
-**Classe `EmbeddingService`** implementada usando `OpenAIEmbeddings` do LangChain.
+**Classe `EmbeddingService`** (`src/embeddings/embedding_service.py`) usando `OpenAIEmbeddings` do LangChain.
 
 **Funcionalidades:**
+- Criação de embedding único e em batch
+- Configuração via variáveis de ambiente (modelo padrão: `text-embedding-3-small`)
+- Tratamento de erros e logging
 
-- Método `create_embedding()` - Criar embedding de um texto único
-- Método `create_embeddings_batch()` - Criar embeddings em batch (otimização)
-- Configuração do modelo via variáveis de ambiente (padrão: `text-embedding-3-small`)
-- Tratamento de erros implementado
-- Logging para debug
-- Suporte a configuração flexível (modelo e API key via variáveis de ambiente ou parâmetros)
+---
 
-**Métodos internos:**
+### Serviços de Negócio
 
-- Embedding único usando `embed_query()`
-- Embeddings em batch usando `embed_documents()`
+**Três serviços principais implementados:**
+
+#### Ingest Service (`src/services/ingest_service.py`)
+- Adiciona novo conhecimento na base
+- Valida `service_name` e `content`
+- Cria embedding automaticamente
+- Tratamento de erros completo
+
+#### Update Service (`src/services/update_service.py`)
+- Atualiza conhecimento existente (comportamento upsert)
+- Se `service_name` não existe, cria novo registro
+- Se existe, atualiza o registro existente
+- Atualiza embedding automaticamente
+
+#### Search Service (`src/services/search_service.py`)
+- Busca semântica por similaridade
+- Parâmetros opcionais: `k` (número de resultados), `threshold` (similaridade mínima), `service_name` (filtro)
+- Retorna resultados ordenados por relevância
+
+**Funcionalidades comuns:**
+- Integração com `EmbeddingService` e `KnowledgeRepository`
+- Validação de entrada
+- Tratamento de erros
+- Logging detalhado
+- Retornos estruturados
 
 ---
 

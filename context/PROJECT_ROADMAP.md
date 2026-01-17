@@ -225,17 +225,17 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 4.1 Implementar Serviço de Ingest
 **Atividades:**
-- [ ] Criar módulo `src/services/ingest_service.py`
-- [ ] Implementar função/classe para ingerir conhecimento:
-  - [ ] Receber conteúdo do conhecimento
-  - [ ] Receber service_name (obrigatório)
-  - [ ] Receber metadados (opcional)
-  - [ ] Criar embedding do conteúdo
-  - [ ] Inserir no banco de dados
-- [ ] Validar dados de entrada
-- [ ] Tratar erros de ingestão
-- [ ] Retornar resultado da operação (sucesso/erro)
-- [ ] Adicionar logs
+- [x] Criar módulo `src/services/ingest_service.py`
+- [x] Implementar função/classe para ingerir conhecimento:
+  - [x] Receber conteúdo do conhecimento
+  - [x] Receber service_name (obrigatório)
+  - [x] Receber metadados (opcional)
+  - [x] Criar embedding do conteúdo
+  - [x] Inserir no banco de dados
+- [x] Validar dados de entrada
+- [x] Tratar erros de ingestão
+- [x] Retornar resultado da operação (sucesso/erro)
+- [x] Adicionar logs
 
 **Entregáveis:**
 - Serviço de ingest funcional
@@ -245,19 +245,19 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 4.2 Implementar Serviço de Update
 **Atividades:**
-- [ ] Criar módulo `src/services/update_service.py`
-- [ ] Implementar função/classe para atualizar conhecimento:
-  - [ ] Receber service_name (obrigatório)
-  - [ ] Receber novo conteúdo
-  - [ ] Receber metadados atualizados (opcional)
-  - [ ] Se service_name não existe: Criar novo registro - comportamento de upsert
-  - [ ] Se service_name existe: Atualizar registro existente (conteúdo, embedding, metadados, updated_at)
-  - [ ] Criar novo embedding do conteúdo atualizado
-  - [ ] Atualizar registro no banco de dados
-- [ ] Validar dados de entrada
-- [ ] Tratar erros de atualização
-- [ ] Retornar resultado da operação
-- [ ] Adicionar logs
+- [x] Criar módulo `src/services/update_service.py`
+- [x] Implementar função/classe para atualizar conhecimento:
+  - [x] Receber service_name (obrigatório)
+  - [x] Receber novo conteúdo
+  - [x] Receber metadados atualizados (opcional)
+  - [x] Se service_name não existe: Criar novo registro - comportamento de upsert
+  - [x] Se service_name existe: Atualizar registro existente (conteúdo, embedding, metadados, updated_at)
+  - [x] Criar novo embedding do conteúdo atualizado
+  - [x] Atualizar registro no banco de dados
+- [x] Validar dados de entrada
+- [x] Tratar erros de atualização
+- [x] Retornar resultado da operação
+- [x] Adicionar logs
 
 **Decisões Tomadas:**
 - ✅ **Estratégia de Update**: Atualização direta do registro (sem versionamento)
@@ -272,20 +272,20 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 4.3 Implementar Serviço de Search
 **Atividades:**
-- [ ] Criar módulo `src/services/search_service.py`
-- [ ] Implementar função/classe para buscar conhecimento:
-  - [ ] Receber query (texto de busca)
-  - [ ] Receber parâmetros opcionais (k, threshold, etc.)
-  - [ ] Criar embedding da query
-  - [ ] Buscar documentos similares no banco
-  - [ ] Filtrar por threshold de similaridade (opcional)
-  - [ ] Retornar resultados ordenados por relevância
-- [ ] Implementar filtros opcionais:
-  - [ ] Filtrar por service_name
-  - [ ] Filtrar por metadados
-- [ ] Formatar resultados de retorno (incluir service_name)
-- [ ] Tratar erros de busca
-- [ ] Adicionar logs
+- [x] Criar módulo `src/services/search_service.py`
+- [x] Implementar função/classe para buscar conhecimento:
+  - [x] Receber query (texto de busca)
+  - [x] Receber parâmetros opcionais (k, threshold, etc.)
+  - [x] Criar embedding da query
+  - [x] Buscar documentos similares no banco
+  - [x] Filtrar por threshold de similaridade (opcional)
+  - [x] Retornar resultados ordenados por relevância
+- [x] Implementar filtros opcionais:
+  - [x] Filtrar por service_name
+  - [x] Filtrar por metadados
+- [x] Formatar resultados de retorno (incluir service_name)
+- [x] Tratar erros de busca
+- [x] Adicionar logs
 
 **Decisões:**
 - Busca semântica utiliza todos os registros da tabela
