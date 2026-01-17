@@ -24,7 +24,7 @@ def get_connection_string() -> str:
     pgvector_url = os.getenv("PGVECTOR_URL")
     if not pgvector_url:
         # Construir a partir de variáveis individuais se PGVECTOR_URL não estiver definida
-        postgres_db = os.getenv("POSTGRES_DB", "java_api_knowledge")
+        postgres_db = os.getenv("POSTGRES_DB", "software_design_knowledge")
         postgres_user = os.getenv("POSTGRES_USER", "postgres")
         postgres_password = os.getenv("POSTGRES_PASSWORD", "postgres")
         postgres_host = os.getenv("POSTGRES_HOST", "localhost")
@@ -62,7 +62,7 @@ def create_connection() -> psycopg.Connection:
 
 def schema_exists(conn: psycopg.Connection) -> bool:
     """
-    Verifica se a tabela java_api_knowledge existe.
+    Verifica se a tabela de conhecimento de projetos de software existe.
     
     Args:
         conn: Conexão PostgreSQL
@@ -76,11 +76,11 @@ def schema_exists(conn: psycopg.Connection) -> bool:
                 SELECT EXISTS (
                     SELECT FROM information_schema.tables 
                     WHERE table_schema = 'public' 
-                    AND table_name = 'java_api_knowledge'
+                    AND table_name = 'software_design_knowledge'
                 );
             """)
             exists = cur.fetchone()[0]
-            logger.debug(f"Tabela java_api_knowledge existe: {exists}")
+            logger.debug(f"Tabela software_design_knowledge existe: {exists}")
             return exists
     except psycopg.Error as e:
         logger.error(f"Erro ao verificar se schema existe: {e}")

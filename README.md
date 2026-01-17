@@ -1,6 +1,6 @@
 # mcp-just-seek-knowledge
 
-Servidor MCP (Model Context Protocol) que armazena e busca conhecimento gerado por IA sobre projetos Java de APIs REST, permitindo ao Cursor acessar informações sobre estruturas de APIs, padrões de projeto, boas práticas e documentação técnica.
+Servidor MCP (Model Context Protocol) que armazena e busca conhecimento gerado por IA sobre projetos de software, permitindo ao Cursor acessar informações sobre estruturas de projetos, padrões de projeto, boas práticas e documentação técnica.
 
 ---
 
@@ -8,7 +8,7 @@ Servidor MCP (Model Context Protocol) que armazena e busca conhecimento gerado p
 
 ### Objetivo
 
-Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre projetos Java de APIs REST.
+Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre projetos de software.
 
 ### Stack Tecnológica
 
@@ -109,7 +109,7 @@ Script de inicialização `init-scripts/01-init-pgvector.sh` para criar a extens
 
 #### Schema do Banco (`src/database/schema.py`)
 
-**Estrutura da tabela `java_api_knowledge`:**
+**Estrutura da tabela `software_design_knowledge` (conhecimento de projetos de software):**
 
 - `id` - Identificador único (SERIAL PRIMARY KEY)
 - `service_name` - Nome do serviço (VARCHAR(255) NOT NULL UNIQUE)

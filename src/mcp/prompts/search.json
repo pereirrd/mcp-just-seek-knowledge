@@ -1,12 +1,12 @@
 {
   "name": "search",
-  "description": "Busca conhecimento sobre APIs Java REST usando busca semântica. Use esta ferramenta quando precisar encontrar informações relevantes sobre padrões, boas práticas, estruturas de APIs ou documentação técnica baseado em uma pergunta ou tópico. A busca utiliza embeddings para encontrar conhecimento semanticamente similar, não apenas correspondência exata de palavras.",
+  "description": "Busca conhecimento sobre projetos de software usando busca semântica. Use esta ferramenta quando precisar encontrar informações relevantes sobre padrões, boas práticas, estruturas de projetos ou documentação técnica baseado em uma pergunta ou tópico. A busca utiliza embeddings para encontrar conhecimento semanticamente similar, não apenas correspondência exata de palavras.",
   "inputSchema": {
     "type": "object",
     "properties": {
       "query": {
         "type": "string",
-        "description": "Pergunta ou tópico de busca sobre APIs Java (ex: 'Como implementar autenticação JWT?', 'padrões de tratamento de erros', 'estrutura de DTOs')."
+        "description": "Pergunta ou tópico de busca sobre projetos de software (ex: 'Como implementar autenticação JWT?', 'padrões de tratamento de erros', 'estrutura de componentes', 'arquitetura de microserviços')."
       },
       "k": {
         "type": "integer",
@@ -15,7 +15,7 @@
       },
       "service_name": {
         "type": "string",
-        "description": "Filtrar busca apenas para um serviço específico (opcional). Deixe vazio para buscar em todos os serviços."
+        "description": "Filtrar busca apenas para um projeto específico (opcional). Deixe vazio para buscar em todos os projetos."
       },
       "threshold": {
         "type": "number",

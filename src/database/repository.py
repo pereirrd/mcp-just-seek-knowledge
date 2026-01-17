@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class KnowledgeRepository:
-    """Repositório para gerenciar conhecimento Java API no PostgreSQL com pgVector."""
+    """Repositório para gerenciar conhecimento de projetos de software no PostgreSQL com pgVector."""
     
     def __init__(self, connection_string: Optional[str] = None):
         """
@@ -59,7 +59,7 @@ class KnowledgeRepository:
             conn = self._get_connection()
             with conn.cursor() as cur:
                 cur.execute("""
-                    INSERT INTO java_api_knowledge (service_name, content, embedding, metadata)
+                    INSERT INTO software_design_knowledge (service_name, content, embedding, metadata)
                     VALUES (%s, %s, %s::vector, %s)
                     RETURNING id
                 """, (
@@ -105,7 +105,7 @@ class KnowledgeRepository:
             conn = self._get_connection()
             with conn.cursor() as cur:
                 cur.execute("""
-                    UPDATE java_api_knowledge
+                    UPDATE software_design_knowledge
                     SET content = %s, embedding = %s::vector, metadata = %s
                     WHERE service_name = %s
                 """, (
@@ -154,7 +154,7 @@ class KnowledgeRepository:
             conn = self._get_connection()
             with conn.cursor() as cur:
                 cur.execute("""
-                    INSERT INTO java_api_knowledge (service_name, content, embedding, metadata)
+                    INSERT INTO software_design_knowledge (service_name, content, embedding, metadata)
                     VALUES (%s, %s, %s::vector, %s)
                     ON CONFLICT (service_name) 
                     DO UPDATE SET
@@ -197,7 +197,7 @@ class KnowledgeRepository:
             with conn.cursor() as cur:
                 cur.execute("""
                     SELECT id, service_name, content, embedding, metadata, created_at, updated_at
-                    FROM java_api_knowledge
+                    FROM software_design_knowledge
                     WHERE service_name = %s
                 """, (service_name,))
                 row = cur.fetchone()
@@ -257,7 +257,7 @@ class KnowledgeRepository:
                 query = f"""
                     SELECT id, service_name, content, embedding, metadata, created_at, updated_at,
                            1 - (embedding <=> %s::vector) as similarity
-                    FROM java_api_knowledge
+                    FROM software_design_knowledge
                     {where_sql}
                     ORDER BY embedding <=> %s::vector
                     LIMIT %s
