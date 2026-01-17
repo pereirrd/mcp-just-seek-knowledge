@@ -1,0 +1,22 @@
+{
+  "name": "ingest",
+  "description": "Adiciona novo conhecimento sobre uma API Java REST na base de dados. Use esta ferramenta quando precisar armazenar informações sobre estruturas de APIs, padrões de projeto, boas práticas ou documentação técnica de um serviço Java específico. O service_name deve ser único e identificará o serviço. Se o service_name já existir, a operação falhará - use 'update' para atualizar conhecimento existente.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "service_name": {
+        "type": "string",
+        "description": "Nome único do serviço Java (ex: 'user-service', 'payment-api'). Deve ser único e identificável."
+      },
+      "content": {
+        "type": "string",
+        "description": "Conteúdo do conhecimento sobre o serviço (ex: estrutura da API, padrões usados, boas práticas, documentação técnica)."
+      },
+      "metadata": {
+        "type": "object",
+        "description": "Metadados adicionais sobre o conhecimento (ex: versão da API, tecnologias usadas, data de criação)."
+      }
+    },
+    "required": ["service_name", "content"]
+  }
+}

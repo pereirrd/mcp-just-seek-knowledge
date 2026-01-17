@@ -225,17 +225,17 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 4.1 Implementar Serviço de Ingest
 **Atividades:**
-- [ ] Criar módulo `src/services/ingest_service.py`
-- [ ] Implementar função/classe para ingerir conhecimento:
-  - [ ] Receber conteúdo do conhecimento
-  - [ ] Receber service_name (obrigatório)
-  - [ ] Receber metadados (opcional)
-  - [ ] Criar embedding do conteúdo
-  - [ ] Inserir no banco de dados
-- [ ] Validar dados de entrada
-- [ ] Tratar erros de ingestão
-- [ ] Retornar resultado da operação (sucesso/erro)
-- [ ] Adicionar logs
+- [x] Criar módulo `src/services/ingest_service.py`
+- [x] Implementar função/classe para ingerir conhecimento:
+  - [x] Receber conteúdo do conhecimento
+  - [x] Receber service_name (obrigatório)
+  - [x] Receber metadados (opcional)
+  - [x] Criar embedding do conteúdo
+  - [x] Inserir no banco de dados
+- [x] Validar dados de entrada
+- [x] Tratar erros de ingestão
+- [x] Retornar resultado da operação (sucesso/erro)
+- [x] Adicionar logs
 
 **Entregáveis:**
 - Serviço de ingest funcional
@@ -245,19 +245,19 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 4.2 Implementar Serviço de Update
 **Atividades:**
-- [ ] Criar módulo `src/services/update_service.py`
-- [ ] Implementar função/classe para atualizar conhecimento:
-  - [ ] Receber service_name (obrigatório)
-  - [ ] Receber novo conteúdo
-  - [ ] Receber metadados atualizados (opcional)
-  - [ ] Se service_name não existe: Criar novo registro - comportamento de upsert
-  - [ ] Se service_name existe: Atualizar registro existente (conteúdo, embedding, metadados, updated_at)
-  - [ ] Criar novo embedding do conteúdo atualizado
-  - [ ] Atualizar registro no banco de dados
-- [ ] Validar dados de entrada
-- [ ] Tratar erros de atualização
-- [ ] Retornar resultado da operação
-- [ ] Adicionar logs
+- [x] Criar módulo `src/services/update_service.py`
+- [x] Implementar função/classe para atualizar conhecimento:
+  - [x] Receber service_name (obrigatório)
+  - [x] Receber novo conteúdo
+  - [x] Receber metadados atualizados (opcional)
+  - [x] Se service_name não existe: Criar novo registro - comportamento de upsert
+  - [x] Se service_name existe: Atualizar registro existente (conteúdo, embedding, metadados, updated_at)
+  - [x] Criar novo embedding do conteúdo atualizado
+  - [x] Atualizar registro no banco de dados
+- [x] Validar dados de entrada
+- [x] Tratar erros de atualização
+- [x] Retornar resultado da operação
+- [x] Adicionar logs
 
 **Decisões Tomadas:**
 - ✅ **Estratégia de Update**: Atualização direta do registro (sem versionamento)
@@ -272,20 +272,20 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 4.3 Implementar Serviço de Search
 **Atividades:**
-- [ ] Criar módulo `src/services/search_service.py`
-- [ ] Implementar função/classe para buscar conhecimento:
-  - [ ] Receber query (texto de busca)
-  - [ ] Receber parâmetros opcionais (k, threshold, etc.)
-  - [ ] Criar embedding da query
-  - [ ] Buscar documentos similares no banco
-  - [ ] Filtrar por threshold de similaridade (opcional)
-  - [ ] Retornar resultados ordenados por relevância
-- [ ] Implementar filtros opcionais:
-  - [ ] Filtrar por service_name
-  - [ ] Filtrar por metadados
-- [ ] Formatar resultados de retorno (incluir service_name)
-- [ ] Tratar erros de busca
-- [ ] Adicionar logs
+- [x] Criar módulo `src/services/search_service.py`
+- [x] Implementar função/classe para buscar conhecimento:
+  - [x] Receber query (texto de busca)
+  - [x] Receber parâmetros opcionais (k, threshold, etc.)
+  - [x] Criar embedding da query
+  - [x] Buscar documentos similares no banco
+  - [x] Filtrar por threshold de similaridade (opcional)
+  - [x] Retornar resultados ordenados por relevância
+- [x] Implementar filtros opcionais:
+  - [x] Filtrar por service_name
+  - [x] Filtrar por metadados
+- [x] Formatar resultados de retorno (incluir service_name)
+- [x] Tratar erros de busca
+- [x] Adicionar logs
 
 **Decisões:**
 - Busca semântica utiliza todos os registros da tabela
@@ -300,16 +300,16 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 5.1 Implementar Estrutura Base do Servidor MCP
 **Atividades:**
-- [ ] Criar módulo `src/mcp/mcp_server.py`
-- [ ] Implementar classe principal do servidor MCP
-- [ ] Implementar protocolo JSON-RPC 2.0:
-  - [ ] Handshake inicial (`initialize`)
-  - [ ] Listar ferramentas (`tools/list`)
-  - [ ] Chamar ferramenta (`tools/call`)
-- [ ] Implementar leitura de stdin (JSON-RPC)
-- [ ] Implementar escrita em stdout (JSON-RPC)
-- [ ] Implementar tratamento de erros JSON-RPC
-- [ ] Adicionar logs
+- [x] Criar módulo `src/mcp/mcp_server.py`
+- [x] Implementar classe principal do servidor MCP
+- [x] Implementar protocolo JSON-RPC 2.0:
+  - [x] Handshake inicial (`initialize`)
+  - [x] Listar ferramentas (`tools/list`)
+  - [x] Chamar ferramenta (`tools/call`)
+- [x] Implementar leitura de stdin (JSON-RPC)
+- [x] Implementar escrita em stdout (JSON-RPC)
+- [x] Implementar tratamento de erros JSON-RPC
+- [x] Adicionar logs
 
 **Entregáveis:**
 - Servidor MCP básico funcional
@@ -319,16 +319,16 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 5.2 Implementar Tool: Ingest
 **Atividades:**
-- [ ] Criar handler para tool `ingest` no servidor MCP
-- [ ] Definir schema de entrada (inputSchema):
-  - [ ] `service_name` - Nome do serviço (string, required)
-  - [ ] `content` - Conteúdo do conhecimento (string, required)
-  - [ ] `metadata` - Metadados adicionais (object, optional)
-- [ ] Integrar com `ingest_service`
-- [ ] Validar parâmetros de entrada
-- [ ] Tratar erros e retornar respostas apropriadas
-- [ ] Formatar resposta JSON-RPC
-- [ ] Adicionar logs
+- [x] Criar handler para tool `ingest` no servidor MCP
+- [x] Definir schema de entrada (inputSchema):
+  - [x] `service_name` - Nome do serviço (string, required)
+  - [x] `content` - Conteúdo do conhecimento (string, required)
+  - [x] `metadata` - Metadados adicionais (object, optional)
+- [x] Integrar com `ingest_service`
+- [x] Validar parâmetros de entrada
+- [x] Tratar erros e retornar respostas apropriadas
+- [x] Formatar resposta JSON-RPC
+- [x] Adicionar logs
 
 **Entregáveis:**
 - Tool `ingest` funcional
@@ -338,16 +338,16 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 5.3 Implementar Tool: Update
 **Atividades:**
-- [ ] Criar handler para tool `update` no servidor MCP
-- [ ] Definir schema de entrada (inputSchema):
-  - [ ] `service_name` - Nome do serviço (string, required)
-  - [ ] `content` - Novo conteúdo (string, required)
-  - [ ] `metadata` - Metadados atualizados (object, optional)
-- [ ] Integrar com `update_service`
-- [ ] Validar parâmetros de entrada
-- [ ] Tratar erros (ex: service_name não existe)
-- [ ] Formatar resposta JSON-RPC
-- [ ] Adicionar logs
+- [x] Criar handler para tool `update` no servidor MCP
+- [x] Definir schema de entrada (inputSchema):
+  - [x] `service_name` - Nome do serviço (string, required)
+  - [x] `content` - Novo conteúdo (string, required)
+  - [x] `metadata` - Metadados atualizados (object, optional)
+- [x] Integrar com `update_service`
+- [x] Validar parâmetros de entrada
+- [x] Tratar erros (ex: service_name não existe)
+- [x] Formatar resposta JSON-RPC
+- [x] Adicionar logs
 
 **Entregáveis:**
 - Tool `update` funcional
@@ -357,17 +357,17 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 5.4 Implementar Tool: Search
 **Atividades:**
-- [ ] Criar handler para tool `search` no servidor MCP
-- [ ] Definir schema de entrada (inputSchema):
-  - [ ] `query` - Texto de busca (string, required)
-  - [ ] `k` - Número de resultados (integer, optional, default: 10)
-  - [ ] `service_name` - Filtrar por serviço (string, optional)
-  - [ ] `threshold` - Threshold de similaridade (float, optional)
-- [ ] Integrar com `search_service`
-- [ ] Validar parâmetros de entrada
-- [ ] Tratar erros de busca
-- [ ] Formatar resposta JSON-RPC com resultados
-- [ ] Adicionar logs
+- [x] Criar handler para tool `search` no servidor MCP
+- [x] Definir schema de entrada (inputSchema):
+  - [x] `query` - Texto de busca (string, required)
+  - [x] `k` - Número de resultados (integer, optional, default: 10)
+  - [x] `service_name` - Filtrar por serviço (string, optional)
+  - [x] `threshold` - Threshold de similaridade (float, optional)
+- [x] Integrar com `search_service`
+- [x] Validar parâmetros de entrada
+- [x] Tratar erros de busca
+- [x] Formatar resposta JSON-RPC com resultados
+- [x] Adicionar logs
 
 **Entregáveis:**
 - Tool `search` funcional
@@ -377,14 +377,14 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 5.5 Criar Entry Point do Servidor
 **Atividades:**
-- [ ] Criar arquivo `src/mcp_server.py` (ou ajustar estrutura)
-- [ ] Implementar função `main()` ou `run()`
-- [ ] Carregar variáveis de ambiente
-- [ ] Inicializar serviços (database, embeddings, etc.)
-- [ ] Inicializar servidor MCP
-- [ ] Iniciar loop principal do servidor
-- [ ] Tratar sinal de interrupção (Ctrl+C)
-- [ ] Adicionar logs de inicialização
+- [x] Criar arquivo `src/mcp_server.py` (ou ajustar estrutura)
+- [x] Implementar função `main()` ou `run()`
+- [x] Carregar variáveis de ambiente
+- [x] Inicializar serviços (database, embeddings, etc.)
+- [x] Inicializar servidor MCP
+- [x] Iniciar loop principal do servidor
+- [x] Tratar sinal de interrupção (Ctrl+C)
+- [x] Adicionar logs de inicialização
 
 **Entregáveis:**
 - Entry point funcional do servidor

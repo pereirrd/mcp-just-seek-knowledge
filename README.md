@@ -25,6 +25,38 @@ Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre proj
 
 ---
 
+## ⚙️ Configuração no Cursor
+
+Para adicionar este servidor MCP no Cursor, configure o arquivo `~/.cursor/mcp.json` (configuração global) ou `.cursor/mcp.json` na raiz do projeto (configuração local).
+
+### Exemplo de configuração (`~/.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "mcp-just-seek-knowledge": {
+      "command": "python",
+      "args": ["/caminho/absoluto/para/projeto/src/mcp_server.py"],
+      "env": {
+        "OPENAI_API_KEY": "sua_chave_api_openai",
+        "OPENAI_EMBEDDING_MODEL": "text-embedding-3-small",
+        "EMBEDDING_DIMENSION": "1536"
+      }
+    }
+  }
+}
+```
+
+**Nota:** As configurações do PostgreSQL (`PGVECTOR_URL`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`) devem ser configuradas no arquivo `.env` do projeto, não no `mcp.json`.
+
+**Importante:**
+- Use caminhos absolutos no campo `args`
+- Configure todas as variáveis de ambiente necessárias
+- O Cursor carrega este arquivo automaticamente ao iniciar
+- Após adicionar, reinicie o Cursor para carregar o servidor MCP
+
+---
+
 ## 🚀 Implementação
 
 ### Preparação e Estrutura
@@ -130,23 +162,42 @@ Tratamento de erros e logging implementados.
 
 ### Serviços de Embeddings
 
-#### Serviço de Embeddings (`src/embeddings/embedding_service.py`)
-
-**Classe `EmbeddingService`** implementada usando `OpenAIEmbeddings` do LangChain.
+**Classe `EmbeddingService`** (`src/embeddings/embedding_service.py`) usando `OpenAIEmbeddings` do LangChain.
 
 **Funcionalidades:**
+- Criação de embedding único e em batch
+- Configuração via variáveis de ambiente (modelo padrão: `text-embedding-3-small`)
+- Tratamento de erros e logging
 
-- Método `create_embedding()` - Criar embedding de um texto único
-- Método `create_embeddings_batch()` - Criar embeddings em batch (otimização)
-- Configuração do modelo via variáveis de ambiente (padrão: `text-embedding-3-small`)
-- Tratamento de erros implementado
-- Logging para debug
-- Suporte a configuração flexível (modelo e API key via variáveis de ambiente ou parâmetros)
+---
 
-**Métodos internos:**
+### Serviços de Negócio
 
-- Embedding único usando `embed_query()`
-- Embeddings em batch usando `embed_documents()`
+**Três serviços principais implementados:**
+
+#### Ingest Service (`src/services/ingest_service.py`)
+- Adiciona novo conhecimento na base
+- Valida `service_name` e `content`
+- Cria embedding automaticamente
+- Tratamento de erros completo
+
+#### Update Service (`src/services/update_service.py`)
+- Atualiza conhecimento existente (comportamento upsert)
+- Se `service_name` não existe, cria novo registro
+- Se existe, atualiza o registro existente
+- Atualiza embedding automaticamente
+
+#### Search Service (`src/services/search_service.py`)
+- Busca semântica por similaridade
+- Parâmetros opcionais: `k` (número de resultados), `threshold` (similaridade mínima), `service_name` (filtro)
+- Retorna resultados ordenados por relevância
+
+**Funcionalidades comuns:**
+- Integração com `EmbeddingService` e `KnowledgeRepository`
+- Validação de entrada
+- Tratamento de erros
+- Logging detalhado
+- Retornos estruturados
 
 ---
 

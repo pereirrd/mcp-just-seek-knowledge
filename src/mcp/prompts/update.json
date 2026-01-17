@@ -1,0 +1,22 @@
+{
+  "name": "update",
+  "description": "Atualiza conhecimento existente sobre uma API Java REST na base de dados. Use esta ferramenta quando o serviço já foi documentado e precisa ser atualizado com novas informações. Se o service_name não existir, será criado um novo registro (comportamento upsert). O conteúdo e embedding serão atualizados automaticamente.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "service_name": {
+        "type": "string",
+        "description": "Nome do serviço Java a ser atualizado (ex: 'user-service'). Se não existir, será criado novo registro."
+      },
+      "content": {
+        "type": "string",
+        "description": "Novo conteúdo do conhecimento sobre o serviço. Substituirá o conteúdo anterior completamente."
+      },
+      "metadata": {
+        "type": "object",
+        "description": "Metadados atualizados sobre o conhecimento."
+      }
+    },
+    "required": ["service_name", "content"]
+  }
+}
