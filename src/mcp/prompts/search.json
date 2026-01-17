@@ -1,0 +1,29 @@
+{
+  "name": "search",
+  "description": "Busca conhecimento sobre APIs Java REST usando busca semântica. Use esta ferramenta quando precisar encontrar informações relevantes sobre padrões, boas práticas, estruturas de APIs ou documentação técnica baseado em uma pergunta ou tópico. A busca utiliza embeddings para encontrar conhecimento semanticamente similar, não apenas correspondência exata de palavras.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Pergunta ou tópico de busca sobre APIs Java (ex: 'Como implementar autenticação JWT?', 'padrões de tratamento de erros', 'estrutura de DTOs')."
+      },
+      "k": {
+        "type": "integer",
+        "description": "Número máximo de resultados a retornar (padrão: 10, máximo recomendado: 50).",
+        "default": 10
+      },
+      "service_name": {
+        "type": "string",
+        "description": "Filtrar busca apenas para um serviço específico (opcional). Deixe vazio para buscar em todos os serviços."
+      },
+      "threshold": {
+        "type": "number",
+        "description": "Threshold mínimo de similaridade semântica entre 0.0 e 1.0 (opcional). Resultados abaixo deste valor serão filtrados. Valores mais altos (ex: 0.7) retornam apenas resultados muito relevantes.",
+        "minimum": 0.0,
+        "maximum": 1.0
+      }
+    },
+    "required": ["query"]
+  }
+}

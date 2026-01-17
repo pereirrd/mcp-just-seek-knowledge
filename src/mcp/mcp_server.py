@@ -3,6 +3,7 @@
 import sys
 import json
 import logging
+from pathlib import Path
 from typing import Dict, Any, Optional, List
 
 from ..services.ingest_service import IngestService
@@ -11,6 +12,9 @@ from ..services.search_service import SearchService
 
 # Logger será configurado no entry point (mcp_server.py)
 logger = logging.getLogger(__name__)
+
+# Caminho para diretório de prompts
+PROMPTS_DIR = Path(__file__).parent / "prompts"
 
 
 class MCPServer:
@@ -80,6 +84,27 @@ class MCPServer:
         }
         self._send_response(response)
     
+    def _load_tool_definition(self, tool_name: str) -> Dict[str, Any]:
+        """
+        Carrega definição de uma tool a partir de arquivo JSON.
+        
+        Args:
+            tool_name: Nome da tool (ex: 'ingest', 'update', 'search')
+            
+        Returns:
+            Dict com definição da tool
+            
+        Raises:
+            FileNotFoundError: Se arquivo não existir
+            json.JSONDecodeError: Se arquivo JSON for inválido
+        """
+        tool_file = PROMPTS_DIR / f"{tool_name}.json"
+        if not tool_file.exists():
+            raise FileNotFoundError(f"Arquivo de definição da tool '{tool_name}' não encontrado: {tool_file}")
+        
+        with open(tool_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    
     def handle_tools_list(self, request_id: Optional[Any]) -> None:
         """
         Lista todas as ferramentas disponíveis.
@@ -88,79 +113,20 @@ class MCPServer:
             request_id: ID da requisição
         """
         logger.info("Listando ferramentas disponíveis")
-        tools = [
-            {
-                "name": "ingest",
-                "description": "Ingere conhecimento na base de dados",
-                "inputSchema": {
-                    "type": "object",
-                    "properties": {
-                        "service_name": {
-                            "type": "string",
-                            "description": "Nome do serviço (obrigatório, único)"
-                        },
-                        "content": {
-                            "type": "string",
-                            "description": "Conteúdo do conhecimento (obrigatório)"
-                        },
-                        "metadata": {
-                            "type": "object",
-                            "description": "Metadados adicionais (opcional)"
-                        }
-                    },
-                    "required": ["service_name", "content"]
-                }
-            },
-            {
-                "name": "update",
-                "description": "Atualiza conhecimento existente na base de dados (comportamento upsert)",
-                "inputSchema": {
-                    "type": "object",
-                    "properties": {
-                        "service_name": {
-                            "type": "string",
-                            "description": "Nome do serviço (obrigatório)"
-                        },
-                        "content": {
-                            "type": "string",
-                            "description": "Novo conteúdo do conhecimento (obrigatório)"
-                        },
-                        "metadata": {
-                            "type": "object",
-                            "description": "Metadados atualizados (opcional)"
-                        }
-                    },
-                    "required": ["service_name", "content"]
-                }
-            },
-            {
-                "name": "search",
-                "description": "Busca conhecimento usando busca semântica",
-                "inputSchema": {
-                    "type": "object",
-                    "properties": {
-                        "query": {
-                            "type": "string",
-                            "description": "Texto de busca (obrigatório)"
-                        },
-                        "k": {
-                            "type": "integer",
-                            "description": "Número de resultados (opcional, padrão: 10)",
-                            "default": 10
-                        },
-                        "service_name": {
-                            "type": "string",
-                            "description": "Filtrar por serviço específico (opcional)"
-                        },
-                        "threshold": {
-                            "type": "number",
-                            "description": "Threshold mínimo de similaridade 0.0-1.0 (opcional)"
-                        }
-                    },
-                    "required": ["query"]
-                }
-            }
-        ]
+        
+        # Lista de tools disponíveis
+        tool_names = ["ingest", "update", "search"]
+        
+        # Carregar definições das tools dos arquivos JSON
+        tools = []
+        for tool_name in tool_names:
+            try:
+                tool_def = self._load_tool_definition(tool_name)
+                tools.append(tool_def)
+                logger.debug(f"Tool '{tool_name}' carregada de {PROMPTS_DIR / f'{tool_name}.json'}")
+            except Exception as e:
+                logger.error(f"Erro ao carregar definição da tool '{tool_name}': {e}", exc_info=True)
+                # Continuar mesmo se uma tool falhar
         
         response = {
             "jsonrpc": "2.0",
