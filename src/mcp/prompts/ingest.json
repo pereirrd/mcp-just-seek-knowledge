@@ -6,17 +6,20 @@
     "properties": {
       "service_name": {
         "type": "string",
-        "description": "Nome único do projeto de software (ex: 'user-service', 'payment-api', 'frontend-app'). Deve ser único e identificável."
+        "description": "Nome único do projeto de software (ex: 'user-service', 'payment-api', 'frontend-app'). Deve ser único, identificável, de preferencia o nome do projeto ou nome do repositorio. Pode ser encontrado em arquivos de configuração YAML, Json, Properties, Xml, etc."
       },
       "content": {
         "type": "string",
-        "description": "Conteúdo do conhecimento sobre o projeto (ex: estrutura do projeto, padrões usados, boas práticas, documentação técnica)."
+        "description": "Conteúdo do conhecimento sobre o projeto (ex: estrutura do projeto, padrões usados, boas práticas, documentação técnica, regras de negócio, etc.)."
       },
       "metadata": {
         "type": "object",
-        "description": "Metadados adicionais sobre o conhecimento (ex: versão da API, tecnologias usadas, data de criação)."
+        "description": "Metadados adicionais sobre o conhecimento (ex: versão da API, tecnologias usadas, data de criação, usuário responsável por esse conhecimento)."
       }
     },
-    "required": ["service_name", "content"]
+    "required": [
+      "service_name",
+      "content"
+    ]
   }
 }
