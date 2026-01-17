@@ -25,6 +25,90 @@ Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre proj
 
 ---
 
+## 🛠️ Configuração do Ambiente
+
+### Processo Completo de Configuração
+
+#### 1. Clone/navegue até o projeto (se necessário)
+
+```bash
+cd /home/pereirrd/dev/git/pereirrd/mcp-just-seek-knowledge
+```
+
+#### 2. Crie e ative ambiente virtual
+
+```bash
+# Criar ambiente virtual
+python3 -m venv venv
+
+# Ativar ambiente virtual
+# No Linux/WSL:
+source venv/bin/activate
+
+# No Windows:
+# venv\Scripts\activate
+```
+
+#### 3. Instale dependências
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+#### 4. Configure variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto (copie de `.env.example` se existir, ou crie manualmente):
+
+```bash
+# Exemplo de .env
+PGVECTOR_URL=postgresql://postgres:postgres@localhost:5433/software_design_knowledge
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5433
+POSTGRES_DB=software_design_knowledge
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+OPENAI_API_KEY=sua_chave_api_openai
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+EMBEDDING_DIMENSION=1536
+```
+
+**Nota:** As variáveis do PostgreSQL também podem ser configuradas no `mcp.json` do Cursor (veja seção abaixo).
+
+#### 5. Inicie PostgreSQL (se usar Docker Compose)
+
+```bash
+docker-compose up -d
+```
+
+Isso criará o PostgreSQL com pgvector automaticamente na porta `5433`.
+
+**Importante:** Se a porta `5432` já estiver em uso, o `docker-compose.yml` está configurado para usar a porta `5433` automaticamente.
+
+#### 6. Teste o servidor MCP (opcional)
+
+```bash
+python src/mcp_server.py
+```
+
+O servidor deve iniciar sem erros e criar automaticamente a tabela `software_design_knowledge` se não existir.
+
+### Verificar Instalação
+
+Para verificar se as dependências foram instaladas corretamente:
+
+```bash
+pip list | grep -E "langchain|psycopg|openai|python-dotenv"
+```
+
+Ou teste os imports diretamente:
+
+```bash
+python -c "from src.database.connection import get_connection_string; from src.mcp.mcp_server import MCPServer; print('✅ Dependências instaladas corretamente!')"
+```
+
+---
+
 ## ⚙️ Configuração no Cursor
 
 Para adicionar este servidor MCP no Cursor, configure o arquivo `~/.cursor/mcp.json` (configuração global) ou `.cursor/mcp.json` na raiz do projeto (configuração local).
@@ -54,6 +138,58 @@ Para adicionar este servidor MCP no Cursor, configure o arquivo `~/.cursor/mcp.j
 - Configure todas as variáveis de ambiente necessárias
 - O Cursor carrega este arquivo automaticamente ao iniciar
 - Após adicionar, reinicie o Cursor para carregar o servidor MCP
+
+### Nota sobre o Cursor
+
+Ao configurar o MCP no Cursor (`~/.cursor/mcp.json`), o Cursor usará o Python do sistema ou o ativo no PATH. Recomendações:
+
+#### Opção 1: Usar o Python global (instalar dependências globalmente)
+
+Se preferir usar o Python global do sistema:
+
+```bash
+pip install -r requirements.txt
+```
+
+E configure o `mcp.json` com:
+
+```json
+{
+  "mcpServers": {
+    "mcp-just-seek-knowledge": {
+      "command": "python",
+      "args": ["/caminho/absoluto/para/projeto/src/mcp_server.py"],
+      ...
+    }
+  }
+}
+```
+
+#### Opção 2: Usar o Python do ambiente virtual (recomendado)
+
+Para usar o ambiente virtual do projeto, especifique o caminho completo do Python do venv no `mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "mcp-just-seek-knowledge": {
+      "command": "/home/pereirrd/dev/git/pereirrd/mcp-just-seek-knowledge/venv/bin/python",
+      "args": ["/home/pereirrd/dev/git/pereirrd/mcp-just-seek-knowledge/src/mcp_server.py"],
+      "env": {
+        "OPENAI_EMBEDDING_MODEL": "text-embedding-3-small",
+        "EMBEDDING_DIMENSION": "1536"
+      }
+    }
+  }
+}
+```
+
+**Vantagens da Opção 2:**
+- Isola as dependências do projeto
+- Evita conflitos com outros projetos Python
+- Facilita gerenciamento de versões
+
+**Nota:** O arquivo `.env` do projeto será carregado automaticamente pelo servidor MCP, então você não precisa repetir as variáveis do PostgreSQL no `mcp.json` (a menos que prefira).
 
 ---
 
