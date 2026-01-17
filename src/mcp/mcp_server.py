@@ -4,7 +4,7 @@ import sys
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 
 from ..services.ingest_service import IngestService
 from ..services.update_service import UpdateService
@@ -292,16 +292,7 @@ class MCPServer:
                 except json.JSONDecodeError as e:
                     logger.error(f"Erro ao decodificar JSON: {e}")
                     # Para erros de parse, o id deve ser null conforme JSON-RPC 2.0
-                    error_response = {
-                        "jsonrpc": "2.0",
-                        "id": None,
-                        "error": {
-                            "code": -32700,
-                            "message": "Parse error",
-                            "data": str(e)
-                        }
-                    }
-                    self._send_response(error_response)
+                    self._error_response(None, -32700, "Parse error", str(e))
                 except Exception as e:
                     logger.error(f"Erro ao processar requisição: {e}", exc_info=True)
                     request_id = request.get("id") if 'request' in locals() else None

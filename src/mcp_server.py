@@ -3,10 +3,8 @@
 import sys
 from pathlib import Path
 
-# Adicionar diretório src ao path para permitir imports relativos quando executado diretamente
-# Isso permite que o script funcione tanto como módulo quanto diretamente
-src_dir = Path(__file__).parent
-parent_dir = src_dir.parent
+# Adicionar diretório do projeto ao path para permitir imports absolutos quando executado diretamente
+parent_dir = Path(__file__).parent.parent
 if str(parent_dir) not in sys.path:
     sys.path.insert(0, str(parent_dir))
 
@@ -24,18 +22,16 @@ load_dotenv(env_file)
 
 # Configurar logging a partir de arquivo INI
 # Criar diretório log se não existir (deve ser criado antes do fileConfig)
-log_dir = Path(__file__).parent.parent / "log"
+log_dir = parent_dir / "log"
 log_dir.mkdir(parents=True, exist_ok=True)
 
-# Carregar configuração de logging do arquivo INI (formato nativo do Python)
-config_file = Path(__file__).parent.parent / "logging.ini"
+# Carregar configuração de logging do arquivo INI
+config_file = parent_dir / "logging.ini"
 if config_file.exists():
-    # Usar fileConfig com caminho absoluto do arquivo de configuração
-    # Isso garante que caminhos relativos no INI sejam resolvidos corretamente
     import os
     original_cwd = os.getcwd()
     try:
-        # Mudar temporariamente para o diretório do projeto para resolver caminhos relativos
+        # Mudar temporariamente para o diretório do projeto para resolver caminhos relativos no INI
         os.chdir(parent_dir)
         logging.config.fileConfig(config_file, disable_existing_loggers=False)
     finally:
