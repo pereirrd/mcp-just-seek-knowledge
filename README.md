@@ -29,7 +29,7 @@ Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre proj
 
 ### Processo Completo de Configuração
 
-#### 1. Clone/navegue até o projeto (se necessário)
+#### 1. Clone o projeto ou navegue até ele (se necessário)
 
 ```bash
 cd /home/pereirrd/dev/git/pereirrd/mcp-just-seek-knowledge
@@ -131,8 +131,6 @@ Para adicionar este servidor MCP no Cursor, configure o arquivo `~/.cursor/mcp.j
 }
 ```
 
-**Nota:** As configurações do PostgreSQL (`PGVECTOR_URL`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`) devem ser configuradas no arquivo `.env` do projeto, não no `mcp.json`.
-
 **Importante:**
 - Use caminhos absolutos no campo `args`
 - Configure todas as variáveis de ambiente necessárias
@@ -159,7 +157,10 @@ E configure o `mcp.json` com:
     "mcp-just-seek-knowledge": {
       "command": "python",
       "args": ["/caminho/absoluto/para/projeto/src/mcp_server.py"],
-      ...
+      "env": {
+        "OPENAI_EMBEDDING_MODEL": "text-embedding-3-small",
+        "EMBEDDING_DIMENSION": "1536"
+      }
     }
   }
 }
@@ -173,8 +174,8 @@ Para usar o ambiente virtual do projeto, especifique o caminho completo do Pytho
 {
   "mcpServers": {
     "mcp-just-seek-knowledge": {
-      "command": "/home/pereirrd/dev/git/pereirrd/mcp-just-seek-knowledge/venv/bin/python",
-      "args": ["/home/pereirrd/dev/git/pereirrd/mcp-just-seek-knowledge/src/mcp_server.py"],
+      "command": "/caminho/absoluto/para/mcp-just-seek-knowledge/venv/bin/python",
+      "args": ["/caminho/absoluto/para/mcp-just-seek-knowledge/src/mcp_server.py"],
       "env": {
         "OPENAI_EMBEDDING_MODEL": "text-embedding-3-small",
         "EMBEDDING_DIMENSION": "1536"
@@ -226,7 +227,7 @@ Arquivo `.env.example` criado com todas as variáveis necessárias:
 - `OPENAI_API_KEY`, `OPENAI_EMBEDDING_MODEL`
 - `EMBEDDING_DIMENSION`
 
-Arquivo `.gitignore` configurado para excluir `.env` e arquivos Python/IDE.
+Arquivo `.gitignore` configurado para excluir `.env` e arquivos Python e de IDE.
 
 #### Docker e PostgreSQL
 
