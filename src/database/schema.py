@@ -35,7 +35,8 @@ $$ LANGUAGE plpgsql;
 """
 
 CREATE_TRIGGER_SQL = """
-CREATE TRIGGER IF NOT EXISTS update_software_design_knowledge_updated_at
+DROP TRIGGER IF EXISTS update_software_design_knowledge_updated_at ON software_design_knowledge;
+CREATE TRIGGER update_software_design_knowledge_updated_at
 BEFORE UPDATE ON software_design_knowledge
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
