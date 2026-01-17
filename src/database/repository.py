@@ -243,12 +243,16 @@ class KnowledgeRepository:
             conn = self._get_connection()
             with conn.cursor() as cur:
                 # Construir query com filtros opcionais
-                where_clauses = []
-                params = [str(query_embedding), str(query_embedding), k]
+                # Ordem dos parâmetros: embedding1 (similarity calc), service_name_filter (se houver), embedding2 (ORDER BY), k (LIMIT)
+                params = [str(query_embedding)]
                 
+                where_clauses = []
                 if service_name_filter:
                     where_clauses.append("service_name = %s")
-                    params.insert(-1, service_name_filter)
+                    params.append(service_name_filter)
+                
+                # Adicionar segundo embedding (para ORDER BY) e k (LIMIT)
+                params.extend([str(query_embedding), k])
                 
                 where_sql = " AND ".join(where_clauses) if where_clauses else ""
                 if where_sql:
