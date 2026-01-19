@@ -219,6 +219,40 @@ class KnowledgeRepository:
             if conn:
                 conn.close()
     
+    def delete(self, service_name: str) -> bool:
+        """
+        Exclui um documento por service_name.
+        
+        Args:
+            service_name: Nome do serviço a ser excluído
+            
+        Returns:
+            bool: True se o documento foi excluído, False se não existe
+        """
+        conn = None
+        try:
+            conn = self._get_connection()
+            with conn.cursor() as cur:
+                cur.execute("""
+                    DELETE FROM software_design_knowledge
+                    WHERE service_name = %s
+                """, (service_name,))
+                deleted = cur.rowcount > 0
+                conn.commit()
+                if deleted:
+                    logger.info(f"Documento excluído para service_name '{service_name}'")
+                else:
+                    logger.warning(f"Documento não encontrado para service_name '{service_name}'")
+                return deleted
+        except psycopg.Error as e:
+            if conn:
+                conn.rollback()
+            logger.error(f"Erro ao excluir documento: {e}")
+            raise
+        finally:
+            if conn:
+                conn.close()
+    
     def similarity_search(
         self,
         query_embedding: List[float],
