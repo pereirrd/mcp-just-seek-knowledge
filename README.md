@@ -22,6 +22,7 @@ Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre proj
 1. **Ingest**: Criar novos registros na base de conhecimento
 2. **Update**: Atualizar registros existentes na base de conhecimento
 3. **Search**: Buscar conhecimento semântico na base
+4. **Delete**: Excluir registros por `service_name` (disponível via script CLI, não exposta como tool do MCP)
 
 ---
 
@@ -286,6 +287,7 @@ Tratamento de erros e logging implementados.
 - `insert()` - Inserir documento no banco
 - `update()` - Atualizar documento por service_name
 - `upsert()` - Inserir ou atualizar (comportamento upsert)
+- `delete()` - Excluir documento por service_name
 - `get_by_service_name()` - Buscar documento por service_name
 - `similarity_search()` - Busca semântica usando pgVector (operador `<=>`)
 
@@ -335,6 +337,47 @@ Tratamento de erros e logging implementados.
 - Tratamento de erros
 - Logging detalhado
 - Retornos estruturados
+
+---
+
+## 🗑️ Scripts CLI
+
+### Exclusão de Registros
+
+O projeto inclui um script CLI para exclusão de registros que **não é exposto como tool do MCP**. Esta funcionalidade está disponível apenas via linha de comando para operações administrativas.
+
+#### Script: `src/database/delete_service.py`
+
+**Funcionalidade:**
+- Exclui um registro da base de conhecimento pelo `service_name`
+- Valida a existência do registro antes de excluir
+- Fornece feedback claro sobre o resultado da operação
+
+**Uso:**
+
+```bash
+python src/database/delete_service.py <service_name>
+```
+
+**Exemplos:**
+
+```bash
+# Excluir um serviço específico
+python src/database/delete_service.py user-service
+
+# O script retorna:
+# - ✓ "Registro excluído com sucesso" se o registro foi encontrado e removido
+# - ✗ "Registro não encontrado" se o service_name não existe
+# - ✗ "Erro ao excluir registro" em caso de falha na operação
+```
+
+**Características:**
+- Validação de parâmetros (service_name não pode ser vazio)
+- Tratamento de erros com logging detalhado
+- Códigos de saída apropriados (0 para sucesso, 1 para falha)
+- Mensagens claras de feedback para o usuário
+
+**Nota:** Esta funcionalidade não está disponível como tool do MCP por motivos de segurança e controle de acesso. Use apenas para operações administrativas necessárias.
 
 ---
 
