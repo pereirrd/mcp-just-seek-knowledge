@@ -106,9 +106,9 @@ Alterações em `src/mcp/mcp_server.py`:
   - Sem validação de args (ou validar que `arguments` é dict)
 
 Checklist:
-- [ ] `tools/list` retorna a nova definição carregando `prompts/list_catalog.json`
-- [ ] `tools/call` aceita `name=list_catalog`
-- [ ] Resposta segue o formato já usado (`content[0].type=text`, `text` com JSON identado)
+- [x] `tools/list` retorna a nova definição carregando `prompts/list_catalog.json`
+- [x] `tools/call` aceita `name=list_catalog`
+- [x] Resposta segue o formato já usado (`content[0].type=text`, `text` com JSON identado)
 
 ---
 
