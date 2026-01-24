@@ -55,9 +55,9 @@ Exemplo:
 - `inputSchema.required`: vazio
 
 Checklist:
-- [ ] Arquivo existe e é JSON válido
-- [ ] `name` exatamente `list_catalog`
-- [ ] Descrição explica que a tool lista os `service_name` existentes
+- [x] Arquivo existe e é JSON válido
+- [x] `name` exatamente `list_catalog`
+- [x] Descrição explica que a tool lista os `service_name` existentes
 
 ---
 
@@ -71,9 +71,9 @@ Checklist:
     - Log em nível `debug/info` com quantidade retornada
 
 Checklist:
-- [ ] Método novo no repositório
-- [ ] Usa conexão e cursor no padrão do arquivo
-- [ ] Retorna lista ordenada de strings
+- [x] Método novo no repositório
+- [x] Usa conexão e cursor no padrão do arquivo
+- [x] Retorna lista ordenada de strings
 
 ---
 
