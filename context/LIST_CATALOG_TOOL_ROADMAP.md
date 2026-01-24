@@ -86,9 +86,9 @@ Checklist:
     - Montar payload: `{ "count": <int>, "services": <list[str]> }`
 
 Checklist:
-- [ ] Service isolado (mesmo padrão dos demais)
-- [ ] Sem dependência de embeddings (apenas repositório)
-- [ ] Output estável e previsível
+- [x] Service isolado (mesmo padrão dos demais)
+- [x] Sem dependência de embeddings (apenas repositório)
+- [x] Output estável e previsível
 
 ---
 
