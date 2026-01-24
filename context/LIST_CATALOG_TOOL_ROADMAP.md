@@ -117,8 +117,8 @@ Checklist:
 - Opcional: adicionar uma seção curta “Como usar `list_catalog`”
 
 Checklist:
-- [ ] README menciona `list_catalog`
-- [ ] Exemplo de retorno consistente com a implementação
+- [x] README menciona `list_catalog`
+- [x] Exemplo de retorno consistente com a implementação
 
 ---
 
