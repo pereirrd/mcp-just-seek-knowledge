@@ -9,6 +9,7 @@ from typing import Dict, Any, Optional
 from ..services.ingest_service import IngestService
 from ..services.update_service import UpdateService
 from ..services.search_service import SearchService
+from ..services.list_catalog_service import ListCatalogService
 
 # Logger será configurado no entry point (mcp_server.py)
 logger = logging.getLogger(__name__)
@@ -25,6 +26,7 @@ class MCPServer:
         self.ingest_service = IngestService()
         self.update_service = UpdateService()
         self.search_service = SearchService()
+        self.list_catalog_service = ListCatalogService()
         logger.info("MCPServer inicializado")
     
     def _send_response(self, response: Dict[str, Any]) -> None:
@@ -115,7 +117,7 @@ class MCPServer:
         logger.info("Listando ferramentas disponíveis")
         
         # Lista de tools disponíveis
-        tool_names = ["ingest", "update", "search"]
+        tool_names = ["ingest", "update", "search", "list_catalog"]
         
         # Carregar definições das tools dos arquivos JSON
         tools = []
@@ -157,6 +159,8 @@ class MCPServer:
                 result = self._handle_update(arguments)
             elif tool_name == "search":
                 result = self._handle_search(arguments)
+            elif tool_name == "list_catalog":
+                result = self._handle_list_catalog(arguments)
             else:
                 self._error_response(request_id, -32601, f"Ferramenta não encontrada: {tool_name}")
                 return
@@ -253,6 +257,24 @@ class MCPServer:
             threshold=threshold,
             service_name=service_name
         )
+
+    def _handle_list_catalog(self, arguments: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Handler para tool list_catalog.
+
+        Args:
+            arguments: Argumentos da tool (não utilizados)
+
+        Returns:
+            Resultado da listagem do catálogo (service_name)
+        """
+        if arguments is None:
+            arguments = {}
+
+        if not isinstance(arguments, dict):
+            raise ValueError("arguments deve ser um objeto JSON")
+
+        return self.list_catalog_service.list_catalog()
     
     def run(self) -> None:
         """Loop principal do servidor MCP lendo do stdin."""

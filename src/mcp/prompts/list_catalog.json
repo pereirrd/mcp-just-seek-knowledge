@@ -1,0 +1,9 @@
+{
+  "name": "list_catalog",
+  "description": "Lista todos os service_name existentes na base de conhecimento. Use esta ferramenta quando precisar descobrir quais projetos/serviços já possuem conhecimento armazenado no sistema.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  }
+}

@@ -22,7 +22,23 @@ Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre proj
 1. **Ingest**: Criar novos registros na base de conhecimento
 2. **Update**: Atualizar registros existentes na base de conhecimento
 3. **Search**: Buscar conhecimento semântico na base
-4. **Delete**: Excluir registros por `service_name` (disponível via script CLI, não exposta como tool do MCP)
+4. **List Catalog**: Listar todos os `service_name` existentes na base (exposta como tool do MCP)
+5. **Delete**: Excluir registros por `service_name` (disponível via script CLI, não exposta como tool do MCP)
+
+#### Como usar `list_catalog`
+
+- **Parâmetros**: não possui (chamar sem `arguments`)
+- **Retorno**: JSON com `services` (lista de `service_name`) e `count`
+
+Exemplo de retorno:
+
+```json
+{
+  "success": true,
+  "services": ["billing-api", "frontend-app", "user-service"],
+  "count": 3
+}
+```
 
 ---
 
@@ -312,7 +328,7 @@ Tratamento de erros e logging implementados.
 
 ### Serviços de Negócio
 
-**Três serviços principais implementados:**
+**Quatro serviços principais implementados:**
 
 #### Ingest Service (`src/services/ingest_service.py`)
 - Adiciona novo conhecimento na base
@@ -330,6 +346,10 @@ Tratamento de erros e logging implementados.
 - Busca semântica por similaridade
 - Parâmetros opcionais: `k` (número de resultados), `threshold` (similaridade mínima), `service_name` (filtro)
 - Retorna resultados ordenados por relevância
+
+#### List Catalog Service (`src/services/list_catalog_service.py`)
+- Lista todos os `service_name` existentes na base
+- Não utiliza embeddings (apenas repositório)
 
 **Funcionalidades comuns:**
 - Integração com `EmbeddingService` e `KnowledgeRepository`

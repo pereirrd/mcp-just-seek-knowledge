@@ -218,6 +218,32 @@ class KnowledgeRepository:
         finally:
             if conn:
                 conn.close()
+
+    def list_service_names(self) -> List[str]:
+        """
+        Lista todos os service_name existentes na base.
+
+        Returns:
+            Lista ordenada de service_name (pode ser vazia).
+        """
+        conn = None
+        try:
+            conn = self._get_connection()
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT service_name
+                    FROM software_design_knowledge
+                    ORDER BY service_name ASC
+                """)
+                service_names = [row[0] for row in cur.fetchall()]
+                logger.debug(f"Listagem de service_name retornou {len(service_names)} registros")
+                return service_names
+        except psycopg.Error as e:
+            logger.error(f"Erro ao listar service_name: {e}")
+            raise
+        finally:
+            if conn:
+                conn.close()
     
     def delete(self, service_name: str) -> bool:
         """
