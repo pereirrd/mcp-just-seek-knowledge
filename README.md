@@ -25,21 +25,6 @@ Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre proj
 4. **List Catalog**: Listar todos os `service_name` existentes na base (exposta como tool do MCP)
 5. **Delete**: Excluir registros por `service_name` (disponível via script CLI, não exposta como tool do MCP)
 
-#### Como usar `list_catalog`
-
-- **Parâmetros**: não possui (chamar sem `arguments`)
-- **Retorno**: JSON com `services` (lista de `service_name`) e `count`
-
-Exemplo de retorno:
-
-```json
-{
-  "success": true,
-  "services": ["billing-api", "frontend-app", "user-service"],
-  "count": 3
-}
-```
-
 ---
 
 ## 🛠️ Configuração do Ambiente
@@ -434,3 +419,23 @@ O script `01-init-pgvector.sh`:
 - Para reexecutar, é necessário remover o volume: `docker-compose down -v`
 
 ---
+
+## ⌨️ Comandos do Cursor (Slash Commands)
+
+Este repositório inclui comandos customizados do Cursor em `.cursor/commands/`, que ajudam a **criar, atualizar e listar** a base de conhecimento no MCP `mcp-just-seek-knowledge`.
+
+### Comandos disponíveis
+
+- **`/criar_base_conhecimento`**: analisa todo o workspace aberto (todos projetos/diretórios), lê documentação (incluindo Swagger/OpenAPI) e **cria** um registro único para o workspace usando `mcp-just-seek-knowledge.ingest`.
+- **`/atualizar_base_conhecimento`**: mesma análise do comando anterior, mas **atualiza** (upsert) o registro do workspace usando `mcp-just-seek-knowledge.update`.
+- **`/listar_base_conhecimento`**: lista os `service_name` existentes via `mcp-just-seek-knowledge.list_catalog` e apresenta um layout amigável com `count`, `service_name` e `metadata` (enriquecendo via `mcp-just-seek-knowledge.search`).
+
+### Como usar
+
+1. Garanta que o MCP `mcp-just-seek-knowledge` esteja configurado no Cursor (`~/.cursor/mcp.json` ou `.cursor/mcp.json`).
+2. Abra o(s) projeto(s) no workspace do Cursor.
+3. No chat do Cursor, execute um comando digitando:
+   - `/criar_base_conhecimento`
+   - `/atualizar_base_conhecimento`
+   - `/listar_base_conhecimento`
+
