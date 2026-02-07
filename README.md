@@ -1,130 +1,132 @@
+[Português](README.pt-br.md) | [Español](README.es.md)
+
 # mcp-just-seek-knowledge
 
-Servidor MCP (Model Context Protocol) que armazena e busca conhecimento gerado por IA sobre projetos de software, permitindo ao Cursor acessar informações sobre estruturas de projetos, padrões de projeto, boas práticas e documentação técnica.
+MCP (Model Context Protocol) server that stores and searches AI-generated knowledge about software projects, allowing Cursor to access information about project structures, design patterns, best practices, and technical documentation.
 
 ---
 
-## 📋 Sobre o Projeto
+## 📋 About the Project
 
-### Objetivo
+### Objective
 
-Criar um servidor MCP que armazena e busca conhecimento gerado por IA sobre projetos de software.
+Create an MCP server that stores and searches AI-generated knowledge about software projects.
 
-### Stack Tecnológica
+### Technology Stack
 
-- **Linguagem**: Python
-- **Framework para Embeddings**: LangChain
-- **Banco de Dados**: PostgreSQL com pgVector
-- **Protocolo**: MCP (Model Context Protocol) para integração com Cursor
+- **Language**: Python
+- **Embedding Framework**: LangChain
+- **Database**: PostgreSQL with pgVector
+- **Protocol**: MCP (Model Context Protocol) for Cursor integration
 
-### Funcionalidades Principais
+### Main Features
 
-1. **Ingest**: Criar novos registros na base de conhecimento
-2. **Update**: Atualizar registros existentes na base de conhecimento
-3. **Search**: Buscar conhecimento semântico na base
-4. **List Catalog**: Listar todos os `service_name` existentes na base (exposta como tool do MCP)
-5. **Delete**: Excluir registros por `service_name` (disponível via script CLI, não exposta como tool do MCP)
+1. **Ingest**: Create new records in the knowledge base
+2. **Update**: Update existing records in the knowledge base
+3. **Search**: Semantic search in the database
+4. **List Catalog**: List all existing `service_name` in the database (exposed as MCP tool)
+5. **Delete**: Delete records by `service_name` (available via CLI script, not exposed as MCP tool)
 
 ---
 
-## 🛠️ Configuração do Ambiente
+## 🛠️ Environment Setup
 
-### Processo Completo de Configuração
+### Complete Setup Process
 
-#### 1. Clone o projeto ou navegue até ele (se necessário)
+#### 1. Clone the project or navigate to it (if needed)
 
 ```bash
 cd /home/pereirrd/dev/git/pereirrd/mcp-just-seek-knowledge
 ```
 
-#### 2. Crie e ative ambiente virtual
+#### 2. Create and activate virtual environment
 
 ```bash
-# Criar ambiente virtual
+# Create virtual environment
 python3 -m venv venv
 
-# Ativar ambiente virtual
-# No Linux/WSL:
+# Activate virtual environment
+# On Linux/WSL:
 source venv/bin/activate
 
-# No Windows:
+# On Windows:
 # venv\Scripts\activate
 ```
 
-#### 3. Instale dependências
+#### 3. Install dependencies
 
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-#### 4. Configure variáveis de ambiente
+#### 4. Configure environment variables
 
-Crie um arquivo `.env` na raiz do projeto (copie de `.env.example` se existir, ou crie manualmente):
+Create a `.env` file in the project root (copy from `.env.example` if it exists, or create manually):
 
 ```bash
-# Exemplo de .env
+# Example .env
 PGVECTOR_URL=postgresql://postgres:postgres@localhost:5433/software_design_knowledge
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5433
 POSTGRES_DB=software_design_knowledge
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
-OPENAI_API_KEY=sua_chave_api_openai
+OPENAI_API_KEY=your_openai_api_key
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 EMBEDDING_DIMENSION=1536
 ```
 
-**Nota:** As variáveis do PostgreSQL também podem ser configuradas no `mcp.json` do Cursor (veja seção abaixo).
+**Note:** PostgreSQL variables can also be configured in Cursor's `mcp.json` (see section below).
 
-#### 5. Inicie PostgreSQL (se usar Docker Compose)
+#### 5. Start PostgreSQL (if using Docker Compose)
 
 ```bash
 docker-compose up -d
 ```
 
-Isso criará o PostgreSQL com pgvector automaticamente na porta `5433`.
+This will create PostgreSQL with pgvector automatically on port `5433`.
 
-**Importante:** Se a porta `5432` já estiver em uso, o `docker-compose.yml` está configurado para usar a porta `5433` automaticamente.
+**Important:** If port `5432` is already in use, `docker-compose.yml` is configured to automatically use port `5433`.
 
-#### 6. Teste o servidor MCP (opcional)
+#### 6. Test the MCP server (optional)
 
 ```bash
 python src/mcp_server.py
 ```
 
-O servidor deve iniciar sem erros e criar automaticamente a tabela `software_design_knowledge` se não existir.
+The server should start without errors and automatically create the `software_design_knowledge` table if it doesn't exist.
 
-### Verificar Instalação
+### Verify Installation
 
-Para verificar se as dependências foram instaladas corretamente:
+To verify if dependencies were installed correctly:
 
 ```bash
 pip list | grep -E "langchain|psycopg|openai|python-dotenv"
 ```
 
-Ou teste os imports diretamente:
+Or test imports directly:
 
 ```bash
-python -c "from src.database.connection import get_connection_string; from src.mcp.mcp_server import MCPServer; print('✅ Dependências instaladas corretamente!')"
+python -c "from src.database.connection import get_connection_string; from src.mcp.mcp_server import MCPServer; print('✅ Dependencies installed correctly!')"
 ```
 
 ---
 
-## ⚙️ Configuração no Cursor
+## ⚙️ Cursor Configuration
 
-Para adicionar este servidor MCP no Cursor, configure o arquivo `~/.cursor/mcp.json` (configuração global) ou `.cursor/mcp.json` na raiz do projeto (configuração local).
+To add this MCP server to Cursor, configure the `~/.cursor/mcp.json` file (global configuration) or `.cursor/mcp.json` in the project root (local configuration).
 
-### Exemplo de configuração (`~/.cursor/mcp.json`):
+### Example configuration (`~/.cursor/mcp.json`):
 
 ```json
 {
   "mcpServers": {
     "mcp-just-seek-knowledge": {
       "command": "python",
-      "args": ["/caminho/absoluto/para/projeto/src/mcp_server.py"],
+      "args": ["/absolute/path/to/project/src/mcp_server.py"],
       "env": {
-        "OPENAI_API_KEY": "sua_chave_api_openai",
+        "OPENAI_API_KEY": "your_openai_api_key",
         "OPENAI_EMBEDDING_MODEL": "text-embedding-3-small",
         "EMBEDDING_DIMENSION": "1536"
       }
@@ -133,32 +135,32 @@ Para adicionar este servidor MCP no Cursor, configure o arquivo `~/.cursor/mcp.j
 }
 ```
 
-**Importante:**
-- Use caminhos absolutos no campo `args`
-- Configure todas as variáveis de ambiente necessárias
-- O Cursor carrega este arquivo automaticamente ao iniciar
-- Após adicionar, reinicie o Cursor para carregar o servidor MCP
+**Important:**
+- Use absolute paths in the `args` field
+- Configure all necessary environment variables
+- Cursor loads this file automatically on startup
+- After adding, restart Cursor to load the MCP server
 
-### Nota sobre o Cursor
+### Note about Cursor
 
-Ao configurar o MCP no Cursor (`~/.cursor/mcp.json`), o Cursor usará o Python do sistema ou o ativo no PATH. Recomendações:
+When configuring MCP in Cursor (`~/.cursor/mcp.json`), Cursor will use the system Python or the one active in PATH. Recommendations:
 
-#### Opção 1: Usar o Python global (instalar dependências globalmente)
+#### Option 1: Use global Python (install dependencies globally)
 
-Se preferir usar o Python global do sistema:
+If you prefer to use the system's global Python:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-E configure o `mcp.json` com:
+And configure `mcp.json` with:
 
 ```json
 {
   "mcpServers": {
     "mcp-just-seek-knowledge": {
       "command": "python",
-      "args": ["/caminho/absoluto/para/projeto/src/mcp_server.py"],
+      "args": ["/absolute/path/to/project/src/mcp_server.py"],
       "env": {
         "OPENAI_EMBEDDING_MODEL": "text-embedding-3-small",
         "EMBEDDING_DIMENSION": "1536"
@@ -168,16 +170,16 @@ E configure o `mcp.json` com:
 }
 ```
 
-#### Opção 2: Usar o Python do ambiente virtual (recomendado)
+#### Option 2: Use virtual environment Python (recommended)
 
-Para usar o ambiente virtual do projeto, especifique o caminho completo do Python do venv no `mcp.json`:
+To use the project's virtual environment, specify the full path to the venv Python in `mcp.json`:
 
 ```json
 {
   "mcpServers": {
     "mcp-just-seek-knowledge": {
-      "command": "/caminho/absoluto/para/mcp-just-seek-knowledge/venv/bin/python",
-      "args": ["/caminho/absoluto/para/mcp-just-seek-knowledge/src/mcp_server.py"],
+      "command": "/absolute/path/to/mcp-just-seek-knowledge/venv/bin/python",
+      "args": ["/absolute/path/to/mcp-just-seek-knowledge/src/mcp_server.py"],
       "env": {
         "OPENAI_EMBEDDING_MODEL": "text-embedding-3-small",
         "EMBEDDING_DIMENSION": "1536"
@@ -187,255 +189,254 @@ Para usar o ambiente virtual do projeto, especifique o caminho completo do Pytho
 }
 ```
 
-**Vantagens da Opção 2:**
-- Isola as dependências do projeto
-- Evita conflitos com outros projetos Python
-- Facilita gerenciamento de versões
+**Advantages of Option 2:**
+- Isolates project dependencies
+- Avoids conflicts with other Python projects
+- Facilitates version management
 
-**Nota:** O arquivo `.env` do projeto será carregado automaticamente pelo servidor MCP, então você não precisa repetir as variáveis do PostgreSQL no `mcp.json` (a menos que prefira).
+**Note:** The project's `.env` file will be automatically loaded by the MCP server, so you don't need to repeat PostgreSQL variables in `mcp.json` (unless you prefer).
 
 ---
 
-## 🚀 Implementação
+## 🚀 Implementation
 
-### Preparação e Estrutura
+### Preparation and Structure
 
-#### Estrutura de Diretórios
+#### Directory Structure
 
-Criada estrutura `src/` com subdiretórios organizados:
+Created `src/` structure with organized subdirectories:
 
-- `src/database/` - Gerenciamento de banco de dados
-- `src/embeddings/` - Serviços de embeddings
-- `src/services/` - Serviços de negócio (ingest, update, search)
-- `src/mcp/` - Servidor MCP e handlers
+- `src/database/` - Database management
+- `src/embeddings/` - Embedding services
+- `src/services/` - Business services (ingest, update, search)
+- `src/mcp/` - MCP server and handlers
 
-Arquivos `__init__.py` criados em todos os pacotes Python.
+`__init__.py` files created in all Python packages.
 
-#### Configuração de Dependências
+#### Dependency Configuration
 
-Arquivo `requirements.txt` criado com todas as dependências necessárias:
+`requirements.txt` file created with all necessary dependencies:
 
 - **LangChain Framework**: langchain, langchain-community, langchain-core, langchain-openai, langchain-postgres
 - **PostgreSQL**: psycopg, pgvector
 - **OpenAI**: openai
-- **Utilidades**: python-dotenv
+- **Utilities**: python-dotenv
 
-#### Variáveis de Ambiente
+#### Environment Variables
 
-Arquivo `.env.example` criado com todas as variáveis necessárias:
+`.env.example` file created with all necessary variables:
 
-- `PGVECTOR_URL` - URL de conexão PostgreSQL
+- `PGVECTOR_URL` - PostgreSQL connection URL
 - `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
 - `OPENAI_API_KEY`, `OPENAI_EMBEDDING_MODEL`
 - `EMBEDDING_DIMENSION`
 
-Arquivo `.gitignore` configurado para excluir `.env` e arquivos Python e de IDE.
+`.gitignore` file configured to exclude `.env` and Python and IDE files.
 
-#### Docker e PostgreSQL
+#### Docker and PostgreSQL
 
-Arquivo `docker-compose.yml` criado com:
+`docker-compose.yml` file created with:
 
-- Serviço PostgreSQL usando imagem `pgvector/pgvector:pg16`
-- Configuração de volumes para persistência
-- Healthcheck configurado
-- Portas e variáveis de ambiente configuradas
+- PostgreSQL service using `pgvector/pgvector:pg16` image
+- Volume configuration for persistence
+- Healthcheck configured
+- Ports and environment variables configured
 
-Script de inicialização `init-scripts/01-init-pgvector.sh` para criar a extensão pgvector automaticamente.
+Initialization script `init-scripts/01-init-pgvector.sh` to automatically create the pgvector extension.
 
 ---
 
-### Configuração do Banco de Dados
+### Database Configuration
 
-#### Schema do Banco (`src/database/schema.py`)
+#### Database Schema (`src/database/schema.py`)
 
-**Estrutura da tabela `software_design_knowledge` (conhecimento de projetos de software):**
+**Structure of `software_design_knowledge` table (software project knowledge):**
 
-- `id` - Identificador único (SERIAL PRIMARY KEY)
-- `service_name` - Nome do serviço (VARCHAR(255) NOT NULL UNIQUE)
-- `content` - Conteúdo do conhecimento (TEXT NOT NULL)
-- `embedding` - Vetor de embedding (vector(1536) NOT NULL)
-- `metadata` - Metadados adicionais (JSONB)
-- `created_at` - Data de criação (TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
-- `updated_at` - Data de atualização (TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
+- `id` - Unique identifier (SERIAL PRIMARY KEY)
+- `service_name` - Service name (VARCHAR(255) NOT NULL UNIQUE)
+- `content` - Knowledge content (TEXT NOT NULL)
+- `embedding` - Embedding vector (vector(1536) NOT NULL)
+- `metadata` - Additional metadata (JSONB)
+- `created_at` - Creation date (TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
+- `updated_at` - Update date (TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
 
-**Índices:**
+**Indexes:**
 
-- Índice IVFFlat para busca vetorial otimizada
-- Índice para `service_name` para buscas por serviço
+- IVFFlat index for optimized vector search
+- Index for `service_name` for service searches
 
 **Triggers:**
 
-- Trigger automático para atualizar `updated_at` em atualizações
+- Automatic trigger to update `updated_at` on updates
 
-#### Gerenciamento de Conexão (`src/database/connection.py`)
+#### Connection Management (`src/database/connection.py`)
 
-Funções implementadas:
+Implemented functions:
 
-- `get_connection_string()` - Obtém string de conexão das variáveis de ambiente
-- `create_connection()` - Cria conexões PostgreSQL
-- `schema_exists()` - Verifica se a tabela existe
-- `create_schema()` - Cria schema completo (tabela, índices, triggers)
-- `initialize_database()` - Inicializa o banco de dados
+- `get_connection_string()` - Gets connection string from environment variables
+- `create_connection()` - Creates PostgreSQL connections
+- `schema_exists()` - Checks if table exists
+- `create_schema()` - Creates complete schema (table, indexes, triggers)
+- `initialize_database()` - Initializes the database
 
-Tratamento de erros e logging implementados.
+Error handling and logging implemented.
 
-#### Repositório de Dados (`src/database/repository.py`)
+#### Data Repository (`src/database/repository.py`)
 
-**Classe `KnowledgeRepository`** implementada usando `psycopg` diretamente.
+**`KnowledgeRepository` class** implemented using `psycopg` directly.
 
-**Métodos implementados:**
+**Implemented methods:**
 
-- `insert()` - Inserir documento no banco
-- `update()` - Atualizar documento por service_name
-- `upsert()` - Inserir ou atualizar (comportamento upsert)
-- `delete()` - Excluir documento por service_name
-- `get_by_service_name()` - Buscar documento por service_name
-- `similarity_search()` - Busca semântica usando pgVector (operador `<=>`)
+- `insert()` - Insert document into database
+- `update()` - Update document by service_name
+- `upsert()` - Insert or update (upsert behavior)
+- `delete()` - Delete document by service_name
+- `get_by_service_name()` - Search document by service_name
+- `similarity_search()` - Semantic search using pgVector (`<=>` operator)
 
-**Funcionalidades:**
+**Features:**
 
-- Suporte a filtros opcionais (threshold de similaridade, filtro por service_name)
-- Integração com estrutura de metadados JSONB
+- Support for optional filters (similarity threshold, service_name filter)
+- Integration with JSONB metadata structure
 
-
----
-
-### Serviços de Embeddings
-
-**Classe `EmbeddingService`** (`src/embeddings/embedding_service.py`) usando `OpenAIEmbeddings` do LangChain.
-
-**Funcionalidades:**
-- Criação de embedding único e em batch
-- Configuração via variáveis de ambiente (modelo padrão: `text-embedding-3-small`)
-- Tratamento de erros e logging
 
 ---
 
-### Serviços de Negócio
+### Embedding Services
 
-**Quatro serviços principais implementados:**
+**`EmbeddingService` class** (`src/embeddings/embedding_service.py`) using `OpenAIEmbeddings` from LangChain.
+
+**Features:**
+- Single and batch embedding creation
+- Configuration via environment variables (default model: `text-embedding-3-small`)
+- Error handling and logging
+
+---
+
+### Business Services
+
+**Four main services implemented:**
 
 #### Ingest Service (`src/services/ingest_service.py`)
-- Adiciona novo conhecimento na base
-- Valida `service_name` e `content`
-- Cria embedding automaticamente
-- Tratamento de erros completo
+- Adds new knowledge to the database
+- Validates `service_name` and `content`
+- Automatically creates embedding
+- Complete error handling
 
 #### Update Service (`src/services/update_service.py`)
-- Atualiza conhecimento existente (comportamento upsert)
-- Se `service_name` não existe, cria novo registro
-- Se existe, atualiza o registro existente
-- Atualiza embedding automaticamente
+- Updates existing knowledge (upsert behavior)
+- If `service_name` doesn't exist, creates new record
+- If exists, updates existing record
+- Automatically updates embedding
 
 #### Search Service (`src/services/search_service.py`)
-- Busca semântica por similaridade
-- Parâmetros opcionais: `k` (número de resultados), `threshold` (similaridade mínima), `service_name` (filtro)
-- Retorna resultados ordenados por relevância
+- Semantic search by similarity
+- Optional parameters: `k` (number of results), `threshold` (minimum similarity), `service_name` (filter)
+- Returns results ordered by relevance
 
 #### List Catalog Service (`src/services/list_catalog_service.py`)
-- Lista todos os `service_name` existentes na base
-- Não utiliza embeddings (apenas repositório)
+- Lists all existing `service_name` in the database
+- Does not use embeddings (repository only)
 
-**Funcionalidades comuns:**
-- Integração com `EmbeddingService` e `KnowledgeRepository`
-- Validação de entrada
-- Tratamento de erros
-- Logging detalhado
-- Retornos estruturados
+**Common features:**
+- Integration with `EmbeddingService` and `KnowledgeRepository`
+- Input validation
+- Error handling
+- Detailed logging
+- Structured returns
 
 ---
 
-## 🗑️ Scripts CLI
+## 🗑️ CLI Scripts
 
-### Exclusão de Registros
+### Record Deletion
 
-O projeto inclui um script CLI para exclusão de registros que **não é exposto como tool do MCP**. Esta funcionalidade está disponível apenas via linha de comando para operações administrativas.
+The project includes a CLI script for record deletion that **is not exposed as an MCP tool**. This functionality is only available via command line for administrative operations.
 
 #### Script: `src/database/delete_service.py`
 
-**Funcionalidade:**
-- Exclui um registro da base de conhecimento pelo `service_name`
-- Valida a existência do registro antes de excluir
-- Fornece feedback claro sobre o resultado da operação
+**Functionality:**
+- Deletes a record from the knowledge base by `service_name`
+- Validates record existence before deletion
+- Provides clear feedback on operation result
 
-**Uso:**
+**Usage:**
 
 ```bash
 python src/database/delete_service.py <service_name>
 ```
 
-**Exemplos:**
+**Examples:**
 
 ```bash
-# Excluir um serviço específico
+# Delete a specific service
 python src/database/delete_service.py user-service
 
-# O script retorna:
-# - ✓ "Registro excluído com sucesso" se o registro foi encontrado e removido
-# - ✗ "Registro não encontrado" se o service_name não existe
-# - ✗ "Erro ao excluir registro" em caso de falha na operação
+# The script returns:
+# - ✓ "Record deleted successfully" if the record was found and removed
+# - ✗ "Record not found" if the service_name doesn't exist
+# - ✗ "Error deleting record" in case of operation failure
 ```
 
-**Características:**
-- Validação de parâmetros (service_name não pode ser vazio)
-- Tratamento de erros com logging detalhado
-- Códigos de saída apropriados (0 para sucesso, 1 para falha)
-- Mensagens claras de feedback para o usuário
+**Features:**
+- Parameter validation (service_name cannot be empty)
+- Error handling with detailed logging
+- Appropriate exit codes (0 for success, 1 for failure)
+- Clear feedback messages for the user
 
-**Nota:** Esta funcionalidade não está disponível como tool do MCP por motivos de segurança e controle de acesso. Use apenas para operações administrativas necessárias.
-
----
-
-## 📚 Script de Inicialização do pgvector
-
-O script `init-scripts/01-init-pgvector.sh` é usado automaticamente pelo PostgreSQL durante a inicialização do container.
-
-### Como funciona
-
-**1. Volume mapeado no docker-compose.yml**
-
-O diretório local `init-scripts/` é mapeado para `/docker-entrypoint-initdb.d` dentro do container através da configuração de volume no docker-compose.yml.
-
-**2. Comportamento automático do PostgreSQL**
-
-A imagem oficial do PostgreSQL (incluindo pgvector/pgvector) executa automaticamente todos os arquivos presentes em `/docker-entrypoint-initdb.d` quando:
-
-- O banco de dados é inicializado pela primeira vez (quando o volume de dados está vazio)
-- Os arquivos são executados em ordem alfabética (por isso o prefixo 01-)
-- Aceita arquivos .sql, .sh e outros executáveis
-
-**3. O que o script faz**
-
-O script `01-init-pgvector.sh`:
-
-- Executa `CREATE EXTENSION IF NOT EXISTS vector;` para criar a extensão pgvector
-- Lista as extensões instaladas para verificação
-- Usa `set -e` para parar em caso de erro
-
-### Importante
-
-- Os scripts em `init-scripts/` só são executados na primeira inicialização (quando o volume está vazio)
-- Se o container já foi iniciado antes, o script não será executado novamente
-- Para reexecutar, é necessário remover o volume: `docker-compose down -v`
+**Note:** This functionality is not available as an MCP tool for security and access control reasons. Use only for necessary administrative operations.
 
 ---
 
-## ⌨️ Comandos do Cursor (Slash Commands)
+## 📚 pgvector Initialization Script
 
-Este repositório inclui comandos customizados do Cursor em `.cursor/commands/`, que ajudam a **criar, atualizar e listar** a base de conhecimento no MCP `mcp-just-seek-knowledge`.
+The `init-scripts/01-init-pgvector.sh` script is automatically used by PostgreSQL during container initialization.
 
-### Comandos disponíveis
+### How it works
 
-- **`/criar_base_conhecimento`**: analisa todo o workspace aberto (todos projetos/diretórios), lê documentação (incluindo Swagger/OpenAPI) e **cria** um registro único para o workspace usando `mcp-just-seek-knowledge.ingest`.
-- **`/atualizar_base_conhecimento`**: mesma análise do comando anterior, mas **atualiza** (upsert) o registro do workspace usando `mcp-just-seek-knowledge.update`.
-- **`/listar_base_conhecimento`**: lista os `service_name` existentes via `mcp-just-seek-knowledge.list_catalog` e apresenta um layout amigável com `count`, `service_name` e `metadata` (enriquecendo via `mcp-just-seek-knowledge.search`).
+**1. Volume mapped in docker-compose.yml**
 
-### Como usar
+The local `init-scripts/` directory is mapped to `/docker-entrypoint-initdb.d` inside the container through volume configuration in docker-compose.yml.
 
-1. Garanta que o MCP `mcp-just-seek-knowledge` esteja configurado no Cursor (`~/.cursor/mcp.json` ou `.cursor/mcp.json`).
-2. Abra o(s) projeto(s) no workspace do Cursor.
-3. No chat do Cursor, execute um comando digitando:
+**2. PostgreSQL automatic behavior**
+
+The official PostgreSQL image (including pgvector/pgvector) automatically executes all files present in `/docker-entrypoint-initdb.d` when:
+
+- The database is initialized for the first time (when the data volume is empty)
+- Files are executed in alphabetical order (hence the 01- prefix)
+- Accepts .sql, .sh and other executable files
+
+**3. What the script does**
+
+The `01-init-pgvector.sh` script:
+
+- Executes `CREATE EXTENSION IF NOT EXISTS vector;` to create the pgvector extension
+- Lists installed extensions for verification
+- Uses `set -e` to stop on error
+
+### Important
+
+- Scripts in `init-scripts/` are only executed on first initialization (when volume is empty)
+- If the container has been started before, the script will not be executed again
+- To re-execute, it's necessary to remove the volume: `docker-compose down -v`
+
+---
+
+## ⌨️ Cursor Commands (Slash Commands)
+
+This repository includes custom Cursor commands in `.cursor/commands/`, which help **create, update, and list** the knowledge base in the MCP `mcp-just-seek-knowledge`.
+
+### Available commands
+
+- **`/criar_base_conhecimento`**: analyzes the entire open workspace (all projects/directories), reads documentation (including Swagger/OpenAPI) and **creates** a unique record for the workspace using `mcp-just-seek-knowledge.ingest`.
+- **`/atualizar_base_conhecimento`**: same analysis as the previous command, but **updates** (upsert) the workspace record using `mcp-just-seek-knowledge.update`.
+- **`/listar_base_conhecimento`**: lists existing `service_name` via `mcp-just-seek-knowledge.list_catalog` and presents a friendly layout with `count`, `service_name` and `metadata` (enriched via `mcp-just-seek-knowledge.search`).
+
+### How to use
+
+1. Ensure the MCP `mcp-just-seek-knowledge` is configured in Cursor (`~/.cursor/mcp.json` or `.cursor/mcp.json`).
+2. Open the project(s) in the Cursor workspace.
+3. In Cursor chat, execute a command by typing:
    - `/criar_base_conhecimento`
    - `/atualizar_base_conhecimento`
    - `/listar_base_conhecimento`
-
